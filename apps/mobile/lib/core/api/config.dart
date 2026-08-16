@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class ApiException implements Exception {
   ApiException(this.message, {this.status = 0, this.body});
 

@@ -126,7 +126,7 @@ final brandingProvider = FutureProvider<void>((ref) async {
           '/branding',
           parse: (d) => Map<String, dynamic>.from(d as Map),
         );
-    final remoteName = data['appName']?.toString()?.trim();
+    final remoteName = data['appName']?.toString().trim();
     final isForeignBrand = remoteName != null &&
         remoteName.toLowerCase().contains('neoforma');
     final appName =

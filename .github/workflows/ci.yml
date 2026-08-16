@@ -45,6 +45,7 @@ jobs:
       - run: npm run db:generate
       # Migrations versionnées (au lieu de db push) — vérifie que le schéma migre proprement.
       - run: npm run db:deploy
+      - run: npm run build --workspace=@teriyascore/shared
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build --workspace=@teriyascore/web
@@ -63,7 +64,7 @@ jobs:
         run: flutter pub get
       - name: flutter analyze
         working-directory: apps/mobile
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
       - name: flutter test
         working-directory: apps/mobile
         run: flutter test

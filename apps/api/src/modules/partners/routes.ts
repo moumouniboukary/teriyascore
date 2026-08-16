@@ -204,7 +204,7 @@ export const partnersRoutes: FastifyPluginAsync = async (app) => {
         }),
         app.prisma.commission.aggregate({
           where: { imfId: imf.id },
-          _sum: { montantFcfa: true },
+          _sum: { montantCommissionFcfa: true },
           _count: true,
         }),
       ]);
@@ -225,7 +225,7 @@ export const partnersRoutes: FastifyPluginAsync = async (app) => {
       },
       commissions: {
         count: commissions._count,
-        totalFcfa: commissions._sum.montantFcfa ?? 0,
+        totalFcfa: commissions._sum?.montantCommissionFcfa ?? 0,
       },
     };
   });
