@@ -1,11 +1,7 @@
-# Blueprint TeriyaScore — API + Postgres (séparé de NeoForma).
-# Render → New → Blueprint → ce repo.
-databases:
-  - name: teriyascore-db
-    databaseName: teriyascore
-    user: teriyascore
-    plan: free
-
+# Blueprint TeriyaScore — API Render uniquement.
+# Postgres : Neon (gratuit), pas Render — 1 seule base free par compte,
+# déjà utilisée par NeoForma. Ne jamais coller l’URL NeoForma ici.
+# Après sync : coller DATABASE_URL Neon (pooled, sslmode=require).
 services:
   - type: web
     name: teriyascore-api
@@ -16,9 +12,7 @@ services:
     healthCheckPath: /ready
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: teriyascore-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: NODE_ENV
