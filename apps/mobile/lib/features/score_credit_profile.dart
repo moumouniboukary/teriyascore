@@ -219,40 +219,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     }
   }
 
-  Future<void> _exportData() async {
-    setState(() {
-      error = null;
-      message = null;
-    });
-    try {
-      final data = await ref.read(apiClientProvider).get<Map<String, dynamic>>(
-            '/me/export',
-            parse: (d) => Map<String, dynamic>.from(d as Map),
-          );
-      if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Export de mes données'),
-          content: Text(
-            'Export généré le ${data['exportedAt'] ?? '—'}.\n\n'
-            'Les données du compte sont disponibles via l’API '
-            'GET /me/export (JSON portable RGPD).',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-      setState(() => message = 'Export prêt');
-    } on ApiException catch (e) {
-      setState(() => error = e.message);
-    }
-  }
-
   Future<void> _deleteAccount() async {
     final pinCtrl = TextEditingController();
     final confirmed = await showDialog<bool>(
@@ -505,7 +471,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             TsPrimaryButton(label: t('save'), loading: saving, onPressed: _save),
             const SizedBox(height: 20),
             _PrivacyActions(
-              onExport: _exportData,
               onDelete: _deleteAccount,
               onLogout: () async {
                 await wipeLocalUserData(ref);
@@ -522,13 +487,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
 class _PrivacyActions extends StatelessWidget {
   const _PrivacyActions({
-    required this.onExport,
     required this.onDelete,
     required this.onLogout,
     required this.logoutLabel,
   });
 
-  final VoidCallback onExport;
   final VoidCallback onDelete;
   final VoidCallback onLogout;
   final String logoutLabel;
@@ -556,15 +519,6 @@ class _PrivacyActions extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
-              _PrivacyActionTile(
-                icon: Icons.download_outlined,
-                iconColor: TsTokens.brand,
-                iconBg: TsTokens.brand.withValues(alpha: 0.12),
-                title: 'Exporter mes données',
-                subtitle: 'Droit d’accès RGPD',
-                onTap: onExport,
-              ),
-              Divider(height: 1, thickness: 1, color: TsTokens.line),
               _PrivacyActionTile(
                 icon: Icons.delete_outline_rounded,
                 iconColor: TsTokens.danger,

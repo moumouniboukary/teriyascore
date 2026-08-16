@@ -48,7 +48,7 @@ class TsStrings {
     'aboutIntro':
         'TeriyaScore est le score de crédit terrain pour les coopératives DigiCoop et le secteur informel au Burkina Faso. Voici, en détail, comment chaque partie de l’application fonctionne.',
     'aboutFooter':
-        'Les données restent les vôtres. Identité et consentements se gèrent dans le Profil ; thème et sync dans Paramètres. Vous pouvez exporter vos données ou supprimer le compte depuis le Profil.',
+        'Les données restent les vôtres. Identité et consentements se gèrent dans le Profil ; thème et sync dans Paramètres. Vous pouvez supprimer le compte depuis le Profil.',
     'helpWhatTitle': 'À quoi sert TeriyaScore ?',
     'helpWhatBody':
         'TeriyaScore aide les agents DigiCoop à constituer un dossier de solvabilité sur le terrain, même hors ligne. Vous collectez les infos client (identité, historique coopérative, activité, capacité de remboursement), calculez un score, puis envoyez le dossier quand le réseau revient. La décision de crédit reste entièrement du ressort de l’agent et de la coopérative.',
@@ -84,7 +84,7 @@ class TsStrings {
         'Connexion par téléphone, code SMS et PIN. Un PIN local peut verrouiller l’app après une longue absence. Si le téléphone le permet, activez le déverrouillage biométrique (empreinte / visage) dans Paramètres.',
     'helpProfileTitle': 'Profil et Paramètres',
     'helpProfileBody':
-        'Le Profil sert à l’identité de l’agent : nom, coopérative, pièce d’identité (KYC), adresse, consentements, export RGPD et suppression de compte. Le thème, la biométrie et la file hors ligne sont dans Paramètres — pas dans le Profil.',
+        'Le Profil sert à l’identité de l’agent : nom, coopérative, pièce d’identité (KYC), adresse, consentements et suppression de compte. Le thème, la biométrie et la file hors ligne sont dans Paramètres — pas dans le Profil.',
     'helpSupport': 'Support',
     'profileIdentity': 'Identité & consentements',
     'profileShortcuts': 'Outils du dossier',
