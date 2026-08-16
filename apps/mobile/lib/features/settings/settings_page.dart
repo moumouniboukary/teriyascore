@@ -7,6 +7,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/ts_widgets.dart';
 import '../agent/agent_store.dart';
 import '../auth/app_lock.dart';
+import '../auth/auth_provider.dart';
 import '../notifications/notifications_data.dart';
 import '../sync/sync_service.dart';
 
@@ -63,8 +64,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final pending = ref.watch(syncPendingProvider);
     final syncErr = ref.watch(syncErrorProvider);
     final queue = ref.read(offlineQueueProvider);
-    final failedItems =
-        queue.list().where((m) => m.status == 'failed').toList();
+    final uid = ref.watch(authProvider.select((s) => s.user?.id));
+    final failedItems = queue
+        .list(ownerUserId: uid)
+        .where((m) => m.status == 'failed')
+        .toList();
     final failed = failedItems.length;
     final unread = ref.watch(unreadNotificationsCountProvider);
 

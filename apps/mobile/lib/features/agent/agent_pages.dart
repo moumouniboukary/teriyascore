@@ -38,6 +38,7 @@ class AgentDossiersPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(agentDossiersRevisionProvider);
     ref.watch(syncPendingProvider);
+    ref.watch(authProvider.select((s) => s.user?.id));
     final store = ref.read(agentDossierStoreProvider);
     final rows = store.list();
     final pending = ref.watch(syncPendingProvider);
@@ -1190,8 +1191,9 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
   Widget build(BuildContext context) {
     final pending = ref.watch(syncPendingProvider);
     final err = ref.watch(syncErrorProvider);
+    final uid = ref.watch(authProvider.select((s) => s.user?.id));
     final queue = ref.watch(offlineQueueProvider);
-    final items = queue.list();
+    final items = queue.list(ownerUserId: uid);
     final t = ref.watch(tsStringsProvider);
 
     return Scaffold(

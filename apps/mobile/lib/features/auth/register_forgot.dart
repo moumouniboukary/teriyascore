@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/api/client.dart';
 import '../../core/l10n/locale_provider.dart';
-import '../../core/offline/wipe_user_data.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ts_widgets.dart';
 import '../sync/sync_service.dart';
@@ -108,7 +107,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       error = null;
     });
     try {
-      await wipeLocalUserData(ref);
       await ref.read(authProvider.notifier).register(
             phone: phoneCtrl.text.trim(),
             pin: pinCtrl.text.trim(),

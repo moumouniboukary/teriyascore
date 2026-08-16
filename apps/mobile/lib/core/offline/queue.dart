@@ -11,6 +11,7 @@ class QueuedMutation {
     required this.createdAt,
     this.status = 'pending',
     this.failReason,
+    this.ownerUserId,
   });
 
   final String clientMutationId;
@@ -21,6 +22,8 @@ class QueuedMutation {
   /// pending | failed — les failed ne sont plus rejouées automatiquement.
   final String status;
   final String? failReason;
+  /// Compte propriétaire — évite de mélanger les files entre agents.
+  final String? ownerUserId;
 
   Map<String, dynamic> toJson() => {
         'clientMutationId': clientMutationId,
@@ -29,6 +32,7 @@ class QueuedMutation {
         'createdAt': createdAt,
         'status': status,
         if (failReason != null) 'failReason': failReason,
+        if (ownerUserId != null) 'ownerUserId': ownerUserId,
       };
 
   factory QueuedMutation.fromJson(Map<String, dynamic> json) {
@@ -39,6 +43,7 @@ class QueuedMutation {
       createdAt: json['createdAt'] as String,
       status: json['status'] as String? ?? 'pending',
       failReason: json['failReason'] as String?,
+      ownerUserId: json['ownerUserId'] as String?,
     );
   }
 
@@ -46,6 +51,7 @@ class QueuedMutation {
     String? status,
     String? failReason,
     bool clearFailReason = false,
+    String? ownerUserId,
   }) {
     return QueuedMutation(
       clientMutationId: clientMutationId,
@@ -54,6 +60,7 @@ class QueuedMutation {
       createdAt: createdAt,
       status: status ?? this.status,
       failReason: clearFailReason ? null : (failReason ?? this.failReason),
+      ownerUserId: ownerUserId ?? this.ownerUserId,
     );
   }
 }
@@ -70,10 +77,13 @@ class OfflineQueue {
     _meta = await Hive.openBox<String>(_metaBox);
   }
 
-  List<QueuedMutation> list({bool pendingOnly = false}) {
-    final all = _box.values
+  List<QueuedMutation> list({bool pendingOnly = false, String? ownerUserId}) {
+    var all = _box.values
         .map((e) => QueuedMutation.fromJson(jsonDecode(e) as Map<String, dynamic>))
         .toList();
+    if (ownerUserId != null) {
+      all = all.where((m) => m.ownerUserId == ownerUserId).toList();
+    }
     if (pendingOnly) {
       return all.where((m) => m.status == 'pending').toList();
     }
@@ -81,6 +91,28 @@ class OfflineQueue {
   }
 
   int get count => list(pendingOnly: true).length;
+
+  int countFor(String? ownerUserId) {
+    if (ownerUserId == null || ownerUserId.isEmpty) return 0;
+    return list(pendingOnly: true, ownerUserId: ownerUserId).length;
+  }
+
+  /// Anciennes mutations sans propriétaire → compte actuellement connecté.
+  Future<void> adoptOrphans(String userId) async {
+    for (final key in _box.keys.toList()) {
+      final raw = _box.get(key);
+      if (raw == null) continue;
+      final m = QueuedMutation.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      if (m.ownerUserId == null || m.ownerUserId!.isEmpty) {
+        await _box.put(key, jsonEncode(m.copyWith(ownerUserId: userId).toJson()));
+      }
+    }
+  }
+
+  Future<void> clearForOwner(String userId) async {
+    final ids = list(ownerUserId: userId).map((m) => m.clientMutationId).toList();
+    await clearAccepted(ids);
+  }
 
   Future<void> enqueue(QueuedMutation mutation) async {
     await _box.put(mutation.clientMutationId, jsonEncode(mutation.toJson()));

@@ -263,10 +263,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     );
     if (confirmed != true) return;
     try {
-      await ref.read(apiClientProvider).delete(
-            '/me',
-            data: {'pin': pinCtrl.text, 'confirm': true},
-          );
+      final local = await ref.read(apiClientProvider).isLocalSession;
+      if (!local) {
+        await ref.read(apiClientProvider).delete(
+              '/me',
+              data: {'pin': pinCtrl.text, 'confirm': true},
+            );
+      }
       await wipeLocalUserData(ref);
       await ref.read(authProvider.notifier).logout();
       if (mounted) context.go('/login');
@@ -473,7 +476,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             _PrivacyActions(
               onDelete: _deleteAccount,
               onLogout: () async {
-                await wipeLocalUserData(ref);
                 await ref.read(authProvider.notifier).logout();
                 if (context.mounted) context.go('/login');
               },

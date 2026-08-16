@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/l10n/locale_provider.dart';
 import '../../core/theme/tokens.dart';
+import '../agent/agent_store.dart';
+import '../auth/auth_provider.dart';
 import '../sync/sync_service.dart';
 
 class AppShell extends ConsumerStatefulWidget {
@@ -19,9 +21,15 @@ class _AppShellState extends ConsumerState<AppShell> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final uid = ref.read(authProvider).user?.id;
+      if (uid != null) {
+        await ref.read(offlineQueueProvider).adoptOrphans(uid);
+        await ref.read(agentDossierStoreProvider).migrateLegacy();
+      }
       final sync = ref.read(syncServiceProvider);
       sync.startAutoSync();
+      await sync.refreshCount();
       sync.flush();
       ref.read(uxPrefsProvider.notifier).setLanguageLocal('fr');
     });

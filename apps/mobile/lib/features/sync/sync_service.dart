@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/client.dart';
 import '../../core/offline/local_cache.dart';
 import '../../core/offline/queue.dart';
+import '../auth/auth_provider.dart';
 
 final offlineQueueProvider = Provider<OfflineQueue>((ref) {
   throw UnimplementedError('OfflineQueue must be overridden in main');
@@ -24,7 +25,8 @@ class SyncService {
   bool _flushing = false;
 
   Future<void> refreshCount() async {
-    _ref.read(syncPendingProvider.notifier).state = _queue.count;
+    final uid = _ref.read(authProvider).user?.id;
+    _ref.read(syncPendingProvider.notifier).state = _queue.countFor(uid);
   }
 
   /// Précharge les écrans clés pour qu'ils restent utilisables hors ligne.
@@ -101,7 +103,14 @@ class SyncService {
   /// Confirme les dossiers sur l’appareil (pas d’appel cloud).
   /// Retourne le nombre d’éléments retirés de la file.
   Future<int> acknowledgeLocal() async {
-    final ids = _queue.list().map((m) => m.clientMutationId).toList();
+    final uid = _ref.read(authProvider).user?.id;
+    if (uid == null) {
+      _ref.read(syncErrorProvider.notifier).state = null;
+      await refreshCount();
+      return 0;
+    }
+    final ids =
+        _queue.list(ownerUserId: uid).map((m) => m.clientMutationId).toList();
     if (ids.isNotEmpty) {
       await _queue.clearAccepted(ids);
     }

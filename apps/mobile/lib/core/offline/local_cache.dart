@@ -25,6 +25,10 @@ class LocalCacheKeys {
   static const homeTipDismissed = 'home_tip_dismissed';
   /// Nom de la coopérative de l’agent (accueil + profil).
   static const agentCooperative = 'agent_cooperative';
+  /// Dossiers scoring (clé historique, avant isolation par compte).
+  static const agentDossiers = 'agent_dossiers';
+
+  static String agentDossiersFor(String userId) => 'agent_dossiers_$userId';
 }
 
 class LocalCache {
@@ -68,6 +72,10 @@ class LocalCache {
   }
 
   bool hasKey(String key) => _box.containsKey(key);
+
+  Future<void> delete(String key) async {
+    await _box.delete(key);
+  }
 
   /// Fusionne une liste entrante dans le cache existant par `id`
   /// (utilisé pour merger les pulls incrémentaux opérations/clients).
