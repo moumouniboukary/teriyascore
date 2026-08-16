@@ -4,12 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/api/client.dart';
 import '../../core/l10n/locale_provider.dart';
-import '../../core/l10n/strings.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ts_widgets.dart';
 import '../auth/auth_provider.dart';
 
-/// Onboarding terrain : 1 écran (langue, nom, métier) + défauts sensés.
+/// Onboarding terrain : 1 écran (nom, métier) + défauts sensés.
 class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
 
@@ -20,7 +19,6 @@ class OnboardingPage extends ConsumerStatefulWidget {
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final nameCtrl = TextEditingController();
   String metier = 'commerce';
-  String language = 'fr';
   bool shareImf = true;
   bool loading = false;
   String? error;
@@ -35,11 +33,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
         !existing.startsWith('+')) {
       nameCtrl.text = existing;
     }
-    language = TsStrings.normalize(
-      user?.language ?? ref.read(uxPrefsProvider).language,
-    );
-    // Défauts accessibilité terrain
-    ref.read(uxPrefsProvider.notifier).setIconModeLocal(true);
   }
 
   @override
@@ -77,12 +70,10 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
       await api.patch(
         '/me/preferences',
         data: {
-          'language': language,
-          'modeIconographique': true,
+          'language': 'fr',
         },
       );
-      ref.read(uxPrefsProvider.notifier).setLanguageLocal(language);
-      ref.read(uxPrefsProvider.notifier).setIconModeLocal(true);
+      ref.read(uxPrefsProvider.notifier).setLanguageLocal('fr');
       await api.put(
         '/me/consents',
         data: {
@@ -100,7 +91,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
             user.copyWith(
               displayName: me['displayName'] as String? ?? user.displayName,
               onboardingCompleted: true,
-              language: language,
+              language: 'fr',
             ),
           );
       await ref.read(authProvider.notifier).refreshMe().catchError((_) {});
@@ -152,17 +143,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 style: TextStyle(color: TsTokens.textMute, height: 1.35),
               ),
               const SizedBox(height: 24),
-              Text(t('language'), style: TextStyle(color: TsTokens.textMute)),
-              const SizedBox(height: 8),
-              TsSegmented(
-                value: language,
-                onChanged: (v) {
-                  setState(() => language = v);
-                  ref.read(uxPrefsProvider.notifier).setLanguageLocal(v);
-                },
-                options: TsStrings.selectableLanguages,
-              ),
-              const SizedBox(height: 20),
               TextField(
                 controller: nameCtrl,
                 textCapitalization: TextCapitalization.words,

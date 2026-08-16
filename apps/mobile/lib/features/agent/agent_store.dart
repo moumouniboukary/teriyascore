@@ -137,6 +137,10 @@ class AgentCoopNotifier extends StateNotifier<String> {
     state = name.trim();
     await _cache.putMap(LocalCacheKeys.agentCooperative, {'name': state});
   }
+
+  void reset() {
+    state = '';
+  }
 }
 
 final agentCoopProvider =

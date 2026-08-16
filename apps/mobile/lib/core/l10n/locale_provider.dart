@@ -7,30 +7,26 @@ import '../offline/local_cache.dart';
 import '../theme/tokens.dart';
 import 'strings.dart';
 
-/// Préférences UX locales (langue + mode icônes + thème).
+/// Préférences UX locales (langue + thème).
 class UxPrefs {
   const UxPrefs({
     this.language = 'fr',
-    this.iconMode = true,
     // Clair par défaut : sur Android, « system » suit aussi l'économiseur
     // d'énergie (mode nuit), ce qui bascule l'app en sombre à tort.
     this.theme = 'light',
   });
 
   final String language;
-  final bool iconMode;
 
   /// `system` | `light` | `dark`
   final String theme;
 
   UxPrefs copyWith({
     String? language,
-    bool? iconMode,
     String? theme,
   }) =>
       UxPrefs(
         language: language ?? this.language,
-        iconMode: iconMode ?? this.iconMode,
         theme: theme ?? this.theme,
       );
 }
@@ -62,9 +58,6 @@ class UxPrefsNotifier extends StateNotifier<UxPrefs> {
         if (!migrated && theme == 'system') theme = 'light';
         state = UxPrefs(
           language: TsStrings.normalize(cached['language']?.toString()),
-          iconMode: cached.containsKey('iconMode')
-              ? cached['iconMode'] == true
-              : true,
           theme: theme,
         );
       }
@@ -101,7 +94,6 @@ class UxPrefsNotifier extends StateNotifier<UxPrefs> {
     try {
       await _ref.read(localCacheProvider).putMap(LocalCacheKeys.uxPrefs, {
         'language': prefs.language,
-        'iconMode': prefs.iconMode,
         'theme': prefs.theme,
         'themeDefaultV2': true,
       });
@@ -110,11 +102,6 @@ class UxPrefsNotifier extends StateNotifier<UxPrefs> {
 
   void setLanguageLocal(String lang) {
     state = state.copyWith(language: TsStrings.normalize(lang));
-    _saveLocal(state);
-  }
-
-  void setIconModeLocal(bool value) {
-    state = state.copyWith(iconMode: value);
     _saveLocal(state);
   }
 
@@ -147,12 +134,10 @@ class UxPrefsNotifier extends StateNotifier<UxPrefs> {
 
   Future<void> persist({
     String? language,
-    bool? iconMode,
     String? theme,
   }) async {
     final next = state.copyWith(
       language: language != null ? TsStrings.normalize(language) : null,
-      iconMode: iconMode,
       theme: theme != null ? _normalizeTheme(theme) : null,
     );
     state = next;
@@ -165,7 +150,6 @@ class UxPrefsNotifier extends StateNotifier<UxPrefs> {
             '/me/preferences',
             data: {
               if (language != null) 'language': TsStrings.normalize(language),
-              if (iconMode != null) 'modeIconographique': iconMode,
               if (theme != null) 'theme': _normalizeTheme(theme),
             },
           );

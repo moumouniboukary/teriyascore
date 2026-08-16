@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/l10n/locale_provider.dart';
-import '../../core/l10n/strings.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ts_widgets.dart';
+import '../agent/agent_store.dart';
 import '../auth/app_lock.dart';
 import '../notifications/notifications_data.dart';
 import '../sync/sync_service.dart';
@@ -19,9 +19,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  late String language;
   late String theme;
-  late bool iconMode;
   bool saving = false;
   String? message;
   String? error;
@@ -31,9 +29,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void initState() {
     super.initState();
     final prefs = ref.read(uxPrefsProvider);
-    language = prefs.language;
     theme = prefs.theme;
-    iconMode = prefs.iconMode;
   }
 
   Future<void> _save() async {
@@ -44,8 +40,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     });
     try {
       await ref.read(uxPrefsProvider.notifier).persist(
-            language: language,
-            iconMode: iconMode,
+            language: 'fr',
             theme: theme,
           );
       if (!mounted) return;
@@ -90,17 +85,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
           ),
           const SizedBox(height: 12),
-          Text(t('language'), style: TextStyle(color: TsTokens.textMute)),
-          const SizedBox(height: 8),
-          TsSegmented(
-            value: language,
-            onChanged: (v) {
-              setState(() => language = v);
-              ref.read(uxPrefsProvider.notifier).setLanguageLocal(v);
-            },
-            options: [for (final e in TsStrings.selectableLanguages) e],
-          ),
-          const SizedBox(height: 16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
@@ -135,19 +119,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(t('iconMode'), style: TextStyle(color: TsTokens.textMute)),
-          const SizedBox(height: 4),
-          Text(
-            t('iconModeHint'),
-            style: TextStyle(color: TsTokens.textMute, fontSize: 13),
-          ),
-          const SizedBox(height: 8),
-          TsSegmented(
-            value: iconMode ? 'oui' : 'non',
-            onChanged: (v) => setState(() => iconMode = v == 'oui'),
-            options: [('oui', t('yes')), ('non', t('no'))],
           ),
           const SizedBox(height: 20),
           Text(
@@ -230,7 +201,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             trailing: pending > 0 || failed > 0
                 ? TextButton(
                     onPressed: () async {
-                      await ref.read(syncServiceProvider).flush();
+                      await ref.read(syncServiceProvider).acknowledgeLocal();
+                      await ref
+                          .read(agentDossierStoreProvider)
+                          .refreshSyncedFlags();
                       setState(() => queueRevision++);
                     },
                     child: Text(t('retrySync')),
@@ -257,7 +231,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         await ref
                             .read(offlineQueueProvider)
                             .retryFailed(m.clientMutationId);
-                        await ref.read(syncServiceProvider).flush();
+                        await ref.read(syncServiceProvider).acknowledgeLocal();
+                        await ref
+                            .read(agentDossierStoreProvider)
+                            .refreshSyncedFlags();
                         setState(() => queueRevision++);
                       },
                     ),

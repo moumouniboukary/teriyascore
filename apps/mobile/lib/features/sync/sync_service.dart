@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/client.dart';
 import '../../core/offline/local_cache.dart';
 import '../../core/offline/queue.dart';
-import '../ledger/ledger_data.dart';
-import '../stock/stock_data.dart';
 
 final offlineQueueProvider = Provider<OfflineQueue>((ref) {
   throw UnimplementedError('OfflineQueue must be overridden in main');
@@ -13,25 +11,6 @@ final offlineQueueProvider = Provider<OfflineQueue>((ref) {
 
 final syncPendingProvider = StateProvider<int>((ref) => 0);
 final syncErrorProvider = StateProvider<String?>((ref) => null);
-
-String _encodeQueryComponent(String value) {
-  final buffer = StringBuffer();
-  for (final unit in value.codeUnits) {
-    const unreserved = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        'abcdefghijklmnopqrstuvwxyz'
-        '0123456789'
-        '-._~';
-    final char = String.fromCharCode(unit);
-    if (unreserved.contains(char)) {
-      buffer.write(char);
-    } else {
-      buffer
-        ..write('%')
-        ..write(unit.toRadixString(16).toUpperCase().padLeft(2, '0'));
-    }
-  }
-  return buffer.toString();
-}
 
 class SyncService {
   SyncService(this._api, this._queue, this._cache, this._ref);
@@ -41,8 +20,6 @@ class SyncService {
   final LocalCache _cache;
   final Ref _ref;
 
-  /// Ids d'opérations déjà vues côté serveur — pour ne notifier que sur du neuf.
-  final Set<String> _seenOps = {};
   Object? _connectivitySub;
   bool _flushing = false;
 
@@ -106,13 +83,6 @@ class SyncService {
     ]);
   }
 
-  void _notifyChanged({bool stock = false}) {
-    _ref.read(ledgerRevisionProvider.notifier).state++;
-    if (stock) {
-      _ref.read(stockRevisionProvider.notifier).state++;
-    }
-  }
-
   /// Écoute les changements de connectivité pour relancer [flush]
   /// automatiquement dès le retour du réseau. Idempotent.
   void startAutoSync() {
@@ -128,136 +98,30 @@ class SyncService {
     _connectivitySub = null;
   }
 
-  Future<void> flush() async {
-    if (_flushing) return;
-    if (await _api.isLocalSession) {
-      _ref.read(syncErrorProvider.notifier).state =
-          'Sans compte, les dossiers restent sur le téléphone. Créez un compte agent pour envoyer à DigiCoop.';
-      await refreshCount();
-      return;
+  /// Confirme les dossiers sur l’appareil (pas d’appel cloud).
+  /// Retourne le nombre d’éléments retirés de la file.
+  Future<int> acknowledgeLocal() async {
+    final ids = _queue.list().map((m) => m.clientMutationId).toList();
+    if (ids.isNotEmpty) {
+      await _queue.clearAccepted(ids);
     }
-    _flushing = true;
     _ref.read(syncErrorProvider.notifier).state = null;
+    await refreshCount();
+    return ids.length;
+  }
+
+  /// Ne contacte plus le cloud : Render n’accepte pas les dossiers agent.
+  /// [userRequested] : bouton Envoi → enregistrement local.
+  Future<void> flush({bool userRequested = false}) async {
+    if (_flushing) return;
+    _flushing = true;
     try {
-      final connectivity = await Connectivity().checkConnectivity();
-      final online = !connectivity.contains(ConnectivityResult.none);
-      if (!online) {
-        _ref.read(syncErrorProvider.notifier).state =
-            'Pas de réseau — le dossier reste en file jusqu’à la connexion.';
-        await refreshCount();
+      _ref.read(syncErrorProvider.notifier).state = null;
+      if (userRequested) {
+        await acknowledgeLocal();
         return;
       }
-
-      var changed = false;
-      var stockChanged = false;
-      final mutations = _queue.list(pendingOnly: true);
-      try {
-        if (mutations.isNotEmpty) {
-          final res = await _api.post<Map<String, dynamic>>(
-            '/sync/push',
-            data: {
-              'mutations': mutations
-                  .map(
-                    (m) => {
-                      'clientMutationId': m.clientMutationId,
-                      'kind': m.kind,
-                      'payload': m.payload,
-                      'createdAt': m.createdAt,
-                    },
-                  )
-                  .toList(),
-            },
-            parse: (d) => Map<String, dynamic>.from(d as Map),
-          );
-          final accepted =
-              (res['accepted'] as List?)?.map((e) => e.toString()).toList() ??
-              [];
-          final rejected = (res['rejected'] as List?) ?? [];
-          await _queue.clearAccepted(accepted);
-          if (accepted.isNotEmpty) {
-            changed = true;
-            if (mutations.any(
-              (m) => accepted.contains(m.clientMutationId) && m.kind == 'upsert_stock',
-            )) {
-              stockChanged = true;
-            }
-          }
-
-          // Rejets : on conserve localement (status failed), on ne rejoue plus.
-          if (rejected.isNotEmpty) {
-            for (final raw in rejected) {
-              final map = Map<String, dynamic>.from(raw as Map);
-              final id = map['clientMutationId']?.toString();
-              final reason = map['reason']?.toString() ?? 'rejeté';
-              if (id != null) await _queue.markFailed(id, reason);
-            }
-            _ref.read(syncErrorProvider.notifier).state =
-                (rejected.first as Map)['reason']?.toString();
-          } else {
-            _ref.read(syncErrorProvider.notifier).state = null;
-          }
-        }
-
-        // Pull incrémental avec curseur persistant.
-        var since =
-            _queue.lastPullSince ??
-            DateTime.fromMillisecondsSinceEpoch(0).toUtc().toIso8601String();
-        var hasMore = true;
-        var pages = 0;
-        while (hasMore && pages < 10) {
-          pages += 1;
-          final pull = await _api.get<Map<String, dynamic>>(
-            '/sync/pull?since=${_encodeQueryComponent(since)}&limit=100',
-            parse: (d) => Map<String, dynamic>.from(d as Map),
-          );
-          final ops = (pull['operations'] as List?) ?? [];
-          final clients = (pull['clients'] as List?) ?? [];
-          final stock = (pull['stock'] as List?) ?? [];
-          final ids = ops.map((e) => (e as Map)['id'].toString()).toSet();
-          final firstPull = _seenOps.isEmpty && ids.isNotEmpty;
-          final hasNew = ids.any((id) => !_seenOps.contains(id));
-          _seenOps.addAll(ids);
-          if (firstPull ||
-              hasNew ||
-              clients.isNotEmpty ||
-              stock.isNotEmpty) {
-            changed = true;
-          }
-          if (stock.isNotEmpty) stockChanged = true;
-
-          await _cache.mergeListById(
-            LocalCacheKeys.operations,
-            ops.map((e) => Map<String, dynamic>.from(e as Map)).toList(),
-          );
-          await _cache.mergeListById(
-            LocalCacheKeys.clients,
-            clients.map((e) => Map<String, dynamic>.from(e as Map)).toList(),
-          );
-          await _cache.mergeListById(
-            LocalCacheKeys.stock,
-            stock.map((e) => Map<String, dynamic>.from(e as Map)).toList(),
-          );
-
-          final next = pull['nextSince']?.toString();
-          if (next != null && next.isNotEmpty) {
-            since = next;
-            await _queue.setLastPullSince(next);
-          }
-          hasMore = pull['hasMore'] == true;
-        }
-      } on ApiException catch (e) {
-        _ref.read(syncErrorProvider.notifier).state = e.message;
-      } catch (e) {
-        _ref.read(syncErrorProvider.notifier).state =
-            'Envoi impossible — réessayez.';
-      } finally {
-        await refreshCount();
-        if (changed) _notifyChanged(stock: stockChanged);
-        // Après un flush réussi (réseau OK), rafraîchir les caches lecture.
-        try {
-          await warmCaches();
-        } catch (_) {}
-      }
+      await refreshCount();
     } finally {
       _flushing = false;
     }

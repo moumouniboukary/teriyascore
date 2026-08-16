@@ -76,6 +76,8 @@ class TsSegmented extends StatelessWidget {
           label: Text(o.$2),
           selected: selected,
           onSelected: (_) => onChanged(o.$1),
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           selectedColor: TsTokens.brand.withValues(alpha: 0.35),
           labelStyle: TextStyle(
             color: selected ? TsTokens.brandSoft : TsTokens.textMute,

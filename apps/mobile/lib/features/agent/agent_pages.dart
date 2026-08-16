@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import '../../core/l10n/locale_provider.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/ts_speak_button.dart';
 import '../auth/auth_provider.dart';
 import '../sync/sync_service.dart';
 import 'agent_store.dart';
@@ -43,15 +42,12 @@ class AgentDossiersPage extends ConsumerWidget {
     final rows = store.list();
     final pending = ref.watch(syncPendingProvider);
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
     final agentName = ref.watch(authProvider).user?.displayName.trim() ?? '';
     final coop = ref.watch(agentCoopProvider);
     final parts = agentName.split(' ').where((p) => p.isNotEmpty);
     final firstName = parts.isEmpty ? t('agentFallback') : parts.first;
 
-    return TsVoiceOnOpen(
-      labelKey: 'dossiersTerrain',
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: TsTokens.bg,
         appBar: AppBar(
           title: Column(
@@ -61,14 +57,14 @@ class AgentDossiersPage extends ConsumerWidget {
                 t.format('helloName', {'name': firstName}),
                 style: GoogleFonts.outfit(
                   fontWeight: FontWeight.w700,
-                  fontSize: iconMode ? 18 : 16,
+                  fontSize: 16,
                 ),
               ),
               Text(
                 coop.isEmpty ? t('coopUnset') : coop,
                 style: TextStyle(
                   color: TsTokens.textMute,
-                  fontSize: iconMode ? 13 : 12,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -86,12 +82,7 @@ class AgentDossiersPage extends ConsumerWidget {
                   ),
                 ),
               ),
-            TsSpeakButton(
-              text: rows.isEmpty
-                  ? '${t('dossiersTerrain')}. ${t('agentEmpty')}'
-                  : '${t('dossiersTerrain')}. ${rows.length} dossier(s).',
-              alwaysShow: true,
-            ),
+
           ],
         ),
         floatingActionButton: FloatingActionButton.extended(
@@ -100,10 +91,10 @@ class AgentDossiersPage extends ConsumerWidget {
           },
           backgroundColor: TsTokens.brand,
           foregroundColor: TsTokens.onBrand,
-          icon: Icon(Icons.add, size: iconMode ? 30 : 24),
+          icon: Icon(Icons.add, size: 24),
           label: Text(
             t('newDossierFull'),
-            style: TextStyle(fontSize: iconMode ? 16 : 14),
+            style: TextStyle(fontSize: 14),
           ),
         ),
         body: rows.isEmpty
@@ -115,7 +106,7 @@ class AgentDossiersPage extends ConsumerWidget {
                     children: [
                       Icon(
                         Icons.assignment_outlined,
-                        size: iconMode ? 72 : 56,
+                        size: 56,
                         color: TsTokens.textMute,
                       ),
                       const SizedBox(height: 16),
@@ -125,16 +116,13 @@ class AgentDossiersPage extends ConsumerWidget {
                         style: TextStyle(
                           color: TsTokens.textMute,
                           height: 1.4,
-                          fontSize: iconMode ? 16 : 14,
+                          fontSize: 14,
                         ),
                       ),
                       const SizedBox(height: 20),
                       FilledButton.icon(
                         onPressed: () => context.go('/app/nouveau'),
                         icon: const Icon(Icons.add),
-                        style: FilledButton.styleFrom(
-                          minimumSize: Size.fromHeight(iconMode ? 56 : 48),
-                        ),
                         label: Text(t('newDossierFull')),
                       ),
                     ],
@@ -150,7 +138,7 @@ class AgentDossiersPage extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
                   itemCount: rows.length,
                   separatorBuilder: (_, _) =>
-                      SizedBox(height: iconMode ? 14 : 10),
+                      SizedBox(height: 10),
                   itemBuilder: (context, i) {
                     final r = rows[i];
                     final reco = r['recommendation']?.toString() ?? '';
@@ -170,11 +158,11 @@ class AgentDossiersPage extends ConsumerWidget {
                           );
                         },
                         child: Padding(
-                          padding: EdgeInsets.all(iconMode ? 18 : 14),
+                          padding: EdgeInsets.all(14),
                           child: Row(
                             children: [
                               CircleAvatar(
-                                radius: iconMode ? 28 : 20,
+                                radius: 20,
                                 backgroundColor:
                                     TsTokens.brand.withValues(alpha: 0.2),
                                 child: Text(
@@ -182,7 +170,7 @@ class AgentDossiersPage extends ConsumerWidget {
                                   style: GoogleFonts.outfit(
                                     fontWeight: FontWeight.w800,
                                     color: TsTokens.brandSoft,
-                                    fontSize: iconMode ? 16 : 14,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -196,7 +184,7 @@ class AgentDossiersPage extends ConsumerWidget {
                                           t('client'),
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: iconMode ? 18 : 16,
+                                        fontSize: 16,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -204,7 +192,7 @@ class AgentDossiersPage extends ConsumerWidget {
                                       recommendationLabel(reco),
                                       style: TextStyle(
                                         color: TsTokens.textMute,
-                                        fontSize: iconMode ? 15 : 13,
+                                        fontSize: 13,
                                       ),
                                     ),
                                     Text(
@@ -216,7 +204,7 @@ class AgentDossiersPage extends ConsumerWidget {
                                       ),
                                       style: TextStyle(
                                         color: TsTokens.textMute,
-                                        fontSize: iconMode ? 13 : 12,
+                                        fontSize: 12,
                                       ),
                                     ),
                                     Text(
@@ -225,7 +213,7 @@ class AgentDossiersPage extends ConsumerWidget {
                                       ),
                                       style: TextStyle(
                                         color: TsTokens.brandSoft,
-                                        fontSize: iconMode ? 15 : 13,
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ],
@@ -237,7 +225,7 @@ class AgentDossiersPage extends ConsumerWidget {
                                     : Icons.cloud_upload,
                                 color:
                                     synced ? TsTokens.ok : TsTokens.sand,
-                                size: iconMode ? 28 : 22,
+                                size: 22,
                               ),
                             ],
                           ),
@@ -247,8 +235,7 @@ class AgentDossiersPage extends ConsumerWidget {
                   },
                 ),
               ),
-      ),
-    );
+      );
   }
 }
 
@@ -329,7 +316,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
     super.dispose();
   }
 
-
   void _goTo(int next) {
     setState(() => stepIndex = next.clamp(0, _flow.length - 1));
   }
@@ -400,8 +386,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
-    final btnH = iconMode ? 58.0 : 50.0;
 
     final last = _flow.length - 1;
     final current = _current;
@@ -427,7 +411,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           leading: IconButton(
             icon: Icon(
               stepIndex == 0 ? Icons.close : Icons.arrow_back,
-              size: iconMode ? 28 : 24,
+              size: 24,
             ),
             onPressed: () {
               if (stepIndex == 0) {
@@ -437,13 +421,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               }
             },
           ),
-          actions: [
-            TsSpeakButton(
-              text:
-                  '${t.format('stepOf', {'n': '${stepIndex + 1}', 'total': '${_flow.length}'})}. ${t(_stepHintKey(current))}',
-              alwaysShow: true,
-            ),
-          ],
         ),
         body: Column(
           children: [
@@ -474,7 +451,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                   Text(
                     t(_stepHintKey(current)),
                     style: GoogleFonts.outfit(
-                      fontSize: iconMode ? 22 : 18,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -483,7 +460,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                     t('agentOfflineHint'),
                     style: TextStyle(
                       color: TsTokens.textMute,
-                      fontSize: iconMode ? 14 : 12,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -493,13 +470,13 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 children: [
-                  if (current == _FormStep.client) ..._stepClient(t, iconMode),
-                  if (current == _FormStep.profil) ..._stepProfil(t, iconMode),
+                  if (current == _FormStep.client) ..._stepClient(t),
+                  if (current == _FormStep.profil) ..._stepProfil(t),
                   if (current == _FormStep.confiance)
-                    ..._stepConfiance(t, iconMode),
+                    ..._stepConfiance(t),
                   if (current == _FormStep.historique)
-                    ..._stepHistory(t, iconMode),
-                  if (current == _FormStep.capacite) ..._stepMoney(t, iconMode),
+                    ..._stepHistory(t),
+                  if (current == _FormStep.capacite) ..._stepMoney(t),
                 ],
               ),
             ),
@@ -520,9 +497,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                           Expanded(
                             child: OutlinedButton(
                               onPressed: () => _goTo(stepIndex - 1),
-                              style: OutlinedButton.styleFrom(
-                                minimumSize: Size.fromHeight(btnH),
-                              ),
                               child: Text(t('back')),
                             ),
                           ),
@@ -541,7 +515,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                                     }
                                   },
                             style: FilledButton.styleFrom(
-                              minimumSize: Size.fromHeight(btnH),
                               backgroundColor: TsTokens.brand,
                               foregroundColor: TsTokens.onBrand,
                             ),
@@ -557,10 +530,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                                     stepIndex < last
                                         ? t('next')
                                         : t('computeScore'),
-                                    style: TextStyle(
-                                      fontSize: iconMode ? 17 : 15,
-                                      fontWeight: FontWeight.w700,
-                                    ),
                                   ),
                           ),
                         ),
@@ -576,17 +545,14 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
     );
   }
 
-  List<Widget> _stepClient(TsStrings t, bool iconMode) => [
+  List<Widget> _stepClient(TsStrings t) => [
         TextField(
           controller: _nom,
           autofocus: true,
           decoration: InputDecoration(
             labelText: t('clientName'),
-            contentPadding: iconMode
-                ? const EdgeInsets.symmetric(horizontal: 16, vertical: 18)
-                : null,
-          ),
-          style: TextStyle(fontSize: iconMode ? 20 : 16),
+                      ),
+          style: TextStyle(fontSize: 16),
           textCapitalization: TextCapitalization.words,
         ),
         const SizedBox(height: 12),
@@ -594,11 +560,8 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           controller: _tel,
           decoration: InputDecoration(
             labelText: t('phoneOptional'),
-            contentPadding: iconMode
-                ? const EdgeInsets.symmetric(horizontal: 16, vertical: 18)
-                : null,
-          ),
-          style: TextStyle(fontSize: iconMode ? 20 : 16),
+                      ),
+          style: TextStyle(fontSize: 16),
           keyboardType: TextInputType.phone,
         ),
         const SizedBox(height: 20),
@@ -606,7 +569,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           t('knownClientAsk'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: iconMode ? 17 : 15,
+            fontSize: 15,
           ),
         ),
         const SizedBox(height: 8),
@@ -616,7 +579,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               child: _bigChoice(
                 label: t('knownClientYes'),
                 selected: clientConnu,
-                iconMode: iconMode,
                 onTap: () => setState(() => clientConnu = true),
               ),
             ),
@@ -625,7 +587,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               child: _bigChoice(
                 label: t('knownClientNo'),
                 selected: !clientConnu,
-                iconMode: iconMode,
                 onTap: () => setState(() => clientConnu = false),
               ),
             ),
@@ -633,12 +594,12 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
         ),
       ];
 
-  List<Widget> _stepProfil(TsStrings t, bool iconMode) => [
+  List<Widget> _stepProfil(TsStrings t) => [
         Text(
           t('sectorAsk'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: iconMode ? 17 : 15,
+            fontSize: 15,
           ),
         ),
         const SizedBox(height: 8),
@@ -658,7 +619,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               ChoiceChip(
                 label: Text(
                   e.$2,
-                  style: TextStyle(fontSize: iconMode ? 15 : 13),
+                  style: TextStyle(fontSize: 13),
                 ),
                 selected: secteur == e.$1,
                 onSelected: (_) => setState(() => secteur = e.$1),
@@ -673,7 +634,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           0,
           15,
           (v) => setState(() => ancienneteActivite = v),
-          iconMode: iconMode,
           suffix: ' ans',
         ),
         _sliderInt(
@@ -682,7 +642,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           1,
           20,
           (v) => setState(() => tailleMenage = v),
-          iconMode: iconMode,
           suffix: t('householdSuffix'),
         ),
         const SizedBox(height: 8),
@@ -690,7 +649,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           t('seasonAsk'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: iconMode ? 17 : 15,
+            fontSize: 15,
           ),
         ),
         const SizedBox(height: 8),
@@ -707,7 +666,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                   child: _bigChoice(
                     label: e.$2,
                     selected: saisonnalite == e.$1,
-                    iconMode: iconMode,
                     onTap: () {
                       setState(() => saisonnalite = e.$1);
                     },
@@ -722,7 +680,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           t('assetsAsk'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: iconMode ? 17 : 15,
+            fontSize: 15,
           ),
         ),
         const SizedBox(height: 8),
@@ -731,21 +689,21 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           runSpacing: 8,
           children: [
             _assetChip(t('assetLand'), Icons.landscape_outlined, actifTerrain,
-                (v) => setState(() => actifTerrain = v), iconMode),
+                (v) => setState(() => actifTerrain = v)),
             _assetChip(t('assetCattle'), Icons.pets_outlined, actifBetail,
-                (v) => setState(() => actifBetail = v), iconMode),
+                (v) => setState(() => actifBetail = v)),
             _assetChip(t('assetTools'), Icons.build_outlined, actifMateriel,
-                (v) => setState(() => actifMateriel = v), iconMode),
+                (v) => setState(() => actifMateriel = v)),
           ],
         ),
       ];
 
-  List<Widget> _stepConfiance(TsStrings t, bool iconMode) => [
+  List<Widget> _stepConfiance(TsStrings t) => [
         Text(
           t('tontineAsk'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: iconMode ? 17 : 15,
+            fontSize: 15,
           ),
         ),
         const SizedBox(height: 8),
@@ -755,7 +713,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               child: _bigChoice(
                 label: t('yes'),
                 selected: tontine,
-                iconMode: iconMode,
                 onTap: () {
                   setState(() => tontine = true);
                 },
@@ -766,7 +723,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               child: _bigChoice(
                 label: t('no'),
                 selected: !tontine,
-                iconMode: iconMode,
                 onTap: () {
                   setState(() {
                     tontine = false;
@@ -785,7 +741,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
             0,
             10,
             (v) => setState(() => tontineAns = v),
-            iconMode: iconMode,
             suffix: ' ans',
           ),
         ],
@@ -796,7 +751,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           0,
           5,
           (v) => setState(() => nbGarants = v),
-          iconMode: iconMode,
         ),
         _sliderInt(
           t('coopAgeAsk'),
@@ -804,15 +758,13 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           0,
           10,
           (v) => setState(() => ancienneteCoop = v),
-          iconMode: iconMode,
           suffix: ' ans',
         ),
       ];
 
-  List<Widget> _stepHistory(TsStrings t, bool iconMode) => [
+  List<Widget> _stepHistory(TsStrings t) => [
         _choiceRow(
           t('depositsAsk'),
-          iconMode,
           options: const [
             (0, 'Jamais'),
             (1, 'Rarement'),
@@ -830,13 +782,11 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           0,
           36,
           (v) => setState(() => ancienneteCompteMois = v),
-          iconMode: iconMode,
           suffix: ' mois',
         ),
         const SizedBox(height: 12),
         _choiceRow(
           t('repayAsk'),
-          iconMode,
           options: const [
             (0, 'Jamais'),
             (1, 'Moyen'),
@@ -849,7 +799,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
         const SizedBox(height: 12),
         _choiceRow(
           t('incidentsAsk'),
-          iconMode,
           options: [
             (0, t('incidentsNone')),
             (1, t('incidentsSome')),
@@ -860,16 +809,13 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
         ),
       ];
 
-  List<Widget> _stepMoney(TsStrings t, bool iconMode) => [
+  List<Widget> _stepMoney(TsStrings t) => [
         TextField(
           controller: _revenu,
           decoration: InputDecoration(
             labelText: t('incomeAsk'),
-            contentPadding: iconMode
-                ? const EdgeInsets.symmetric(horizontal: 16, vertical: 18)
-                : null,
-          ),
-          style: TextStyle(fontSize: iconMode ? 20 : 16),
+                      ),
+          style: TextStyle(fontSize: 16),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
@@ -878,11 +824,8 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           controller: _charges,
           decoration: InputDecoration(
             labelText: t('chargesAsk'),
-            contentPadding: iconMode
-                ? const EdgeInsets.symmetric(horizontal: 16, vertical: 18)
-                : null,
-          ),
-          style: TextStyle(fontSize: iconMode ? 20 : 16),
+                      ),
+          style: TextStyle(fontSize: 16),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
@@ -891,11 +834,8 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           controller: _montant,
           decoration: InputDecoration(
             labelText: t('requestAsk'),
-            contentPadding: iconMode
-                ? const EdgeInsets.symmetric(horizontal: 16, vertical: 18)
-                : null,
-          ),
-          style: TextStyle(fontSize: iconMode ? 20 : 16),
+                      ),
+          style: TextStyle(fontSize: 16),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
@@ -906,7 +846,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
           1,
           12,
           (v) => setState(() => dureeMois = v),
-          iconMode: iconMode,
           suffix: ' mois',
         ),
       ];
@@ -916,21 +855,22 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
     IconData icon,
     bool selected,
     ValueChanged<bool> onChanged,
-    bool iconMode,
   ) {
     return FilterChip(
       selected: selected,
-      avatar: Icon(icon, size: iconMode ? 22 : 18),
+      avatar: Icon(icon, size: 18),
       label: Text(
         label,
-        style: TextStyle(fontSize: iconMode ? 15 : 13),
+        style: TextStyle(fontSize: 13),
       ),
       selectedColor: TsTokens.brand.withValues(alpha: 0.25),
       checkmarkColor: TsTokens.brand,
       onSelected: (v) => onChanged(v),
-      padding: EdgeInsets.symmetric(
-        horizontal: iconMode ? 10 : 6,
-        vertical: iconMode ? 10 : 4,
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+        vertical: 0,
       ),
     );
   }
@@ -938,7 +878,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
   Widget _bigChoice({
     required String label,
     required bool selected,
-    required bool iconMode,
     required VoidCallback onTap,
   }) {
     return Material(
@@ -951,7 +890,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
         onTap: onTap,
         child: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: iconMode ? 18 : 14),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
@@ -963,7 +902,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
             label,
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: iconMode ? 17 : 15,
+              fontSize: 15,
               color: selected ? TsTokens.brandSoft : TsTokens.text,
             ),
           ),
@@ -973,8 +912,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
   }
 
   Widget _choiceRow(
-    String title,
-    bool iconMode, {
+    String title, {
     required List<(int, String)> options,
     required int value,
     required ValueChanged<int> onChanged,
@@ -982,19 +920,12 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: iconMode ? 17 : 15,
-                ),
-              ),
-            ),
-            TsSpeakButton(text: title, compact: true),
-          ],
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+          ),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -1005,17 +936,16 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               ChoiceChip(
                 label: Text(
                   o.$2,
-                  style: TextStyle(fontSize: iconMode ? 15 : 13),
+                  style: TextStyle(fontSize: 13),
                 ),
                 selected: value == o.$1,
                 onSelected: (_) {
                   onChanged(o.$1);
                 },
                 selectedColor: TsTokens.brand.withValues(alpha: 0.25),
-                labelPadding: EdgeInsets.symmetric(
-                  horizontal: iconMode ? 10 : 6,
-                  vertical: iconMode ? 4 : 0,
-                ),
+                visualDensity: VisualDensity.compact,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 4),
               ),
           ],
         ),
@@ -1029,7 +959,6 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
     int min,
     int max,
     ValueChanged<int> onChanged, {
-    bool iconMode = false,
     String suffix = '',
   }) {
     return Column(
@@ -1042,7 +971,7 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
                 label,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: iconMode ? 16 : 14,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -1051,12 +980,8 @@ class _AgentNewDossierPageState extends ConsumerState<AgentNewDossierPage> {
               style: TextStyle(
                 color: TsTokens.brandSoft,
                 fontWeight: FontWeight.w700,
-                fontSize: iconMode ? 16 : 14,
+                fontSize: 14,
               ),
-            ),
-            TsSpeakButton(
-              text: '$label : $value$suffix',
-              compact: true,
             ),
           ],
         ),
@@ -1085,15 +1010,10 @@ class AgentDossierDetailPage extends ConsumerWidget {
     final result = AgentScoreResult.fromJson(resultMap);
     final reco = result.recommendation;
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
     final clientName = row['clientNom']?.toString() ?? t('client');
     final score = result.score850;
-    final announce =
-        '$clientName. Score $score. ${riskCategoryLabel(result.riskCategory)}. ${recommendationLabel(reco)}.';
 
-    return TsVoiceOnOpen(
-      text: announce,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: TsTokens.bg,
         appBar: AppBar(
           title: Text(
@@ -1101,9 +1021,6 @@ class AgentDossierDetailPage extends ConsumerWidget {
             style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
           ),
           backgroundColor: TsTokens.surface,
-          actions: [
-            TsSpeakButton(text: announce, alwaysShow: true),
-          ],
         ),
         body: ListView(
           padding: const EdgeInsets.all(16),
@@ -1114,7 +1031,7 @@ class AgentDossierDetailPage extends ConsumerWidget {
                   Text(
                     '$score',
                     style: GoogleFonts.outfit(
-                      fontSize: iconMode ? 64 : 56,
+                      fontSize: 56,
                       fontWeight: FontWeight.w800,
                       color: TsTokens.brand,
                     ),
@@ -1123,14 +1040,14 @@ class AgentDossierDetailPage extends ConsumerWidget {
                     t('scoreScale'),
                     style: TextStyle(
                       color: TsTokens.textMute,
-                      fontSize: iconMode ? 13 : 12,
+                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     riskCategoryLabel(result.riskCategory),
                     style: GoogleFonts.outfit(
-                      fontSize: iconMode ? 18 : 16,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: TsTokens.brandSoft,
                     ),
@@ -1138,7 +1055,7 @@ class AgentDossierDetailPage extends ConsumerWidget {
                   Text(
                     recommendationLabel(reco),
                     style: GoogleFonts.outfit(
-                      fontSize: iconMode ? 20 : 18,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -1148,7 +1065,7 @@ class AgentDossierDetailPage extends ConsumerWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: TsTokens.textMute,
-                      fontSize: iconMode ? 14 : 13,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -1159,23 +1076,12 @@ class AgentDossierDetailPage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          t('repayCapacity'),
-                          style: GoogleFonts.outfit(
-                            fontWeight: FontWeight.w700,
-                            fontSize: iconMode ? 17 : 15,
-                          ),
-                        ),
-                      ),
-                      TsSpeakButton(
-                        text:
-                            '${t('repayCapacity')}. Taux de charge ${(result.chargeRate * 100).toStringAsFixed(0)} pour cent.',
-                        compact: true,
-                      ),
-                    ],
+                  Text(
+                    t('repayCapacity'),
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   _kv(t('dtiLabel'),
@@ -1197,21 +1103,21 @@ class AgentDossierDetailPage extends ConsumerWidget {
                     t('topDrivers'),
                     style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w700,
-                      fontSize: iconMode ? 17 : 15,
+                      fontSize: 15,
                     ),
                   ),
                   const SizedBox(height: 8),
                   for (final d in result.drivers)
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: iconMode ? 10 : 6,
+                        vertical: 6,
                       ),
                       child: Row(
                         children: [
                           Expanded(
                             child: Text(
                               d.label,
-                              style: TextStyle(fontSize: iconMode ? 16 : 14),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           Text(
@@ -1219,13 +1125,10 @@ class AgentDossierDetailPage extends ConsumerWidget {
                             style: TextStyle(
                               color: TsTokens.brandSoft,
                               fontWeight: FontWeight.w700,
-                              fontSize: iconMode ? 16 : 14,
+                              fontSize: 14,
                             ),
                           ),
-                          TsSpeakButton(
-                            text: '${d.label} : plus ${d.delta}',
-                            compact: true,
-                          ),
+
                         ],
                       ),
                     ),
@@ -1235,9 +1138,6 @@ class AgentDossierDetailPage extends ConsumerWidget {
             const SizedBox(height: 20),
             OutlinedButton(
               onPressed: () => context.go('/app'),
-              style: OutlinedButton.styleFrom(
-                minimumSize: Size.fromHeight(iconMode ? 56 : 48),
-              ),
               child: Text(t('backToDossiers')),
             ),
             TextButton(
@@ -1246,8 +1146,7 @@ class AgentDossierDetailPage extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _kv(String k, String v) => Padding(
@@ -1271,13 +1170,17 @@ class AgentSyncPage extends ConsumerStatefulWidget {
 
 class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
   bool busy = false;
+  String? notice;
 
   Future<void> _syncNow() async {
     if (busy) return;
     setState(() => busy = true);
     try {
-      await ref.read(syncServiceProvider).flush();
+      final n = await ref.read(syncServiceProvider).acknowledgeLocal();
       await ref.read(agentDossierStoreProvider).refreshSyncedFlags();
+      if (!mounted) return;
+      final t = ref.read(tsStringsProvider);
+      setState(() => notice = n == 0 ? t('syncLocalNone') : t('syncLocalKept'));
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -1290,14 +1193,8 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
     final queue = ref.watch(offlineQueueProvider);
     final items = queue.list();
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
-    final announce = pending > 0
-        ? '${t('syncTitle')}. $pending ${t('pendingSends')}.'
-        : '${t('syncTitle')}. ${t('syncAllDone')}';
 
-    return TsVoiceOnOpen(
-      text: announce,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: TsTokens.bg,
         appBar: AppBar(
           title: Text(
@@ -1305,9 +1202,6 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
             style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
           ),
           backgroundColor: TsTokens.surface,
-          actions: [
-            TsSpeakButton(text: announce, alwaysShow: true),
-          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -1320,16 +1214,23 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                     Text(
                       '$pending',
                       style: GoogleFonts.outfit(
-                        fontSize: iconMode ? 48 : 40,
+                        fontSize: 40,
                         fontWeight: FontWeight.w800,
                         color: TsTokens.brand,
                       ),
                     ),
                     Text(
                       t('pendingSends'),
-                      style: TextStyle(fontSize: iconMode ? 16 : 14),
+                      style: TextStyle(fontSize: 14),
                     ),
-                    if (err != null) ...[
+                    if (notice != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        notice!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: TsTokens.ok, height: 1.35),
+                      ),
+                    ] else if (err != null) ...[
                       const SizedBox(height: 8),
                       Text(
                         err,
@@ -1338,7 +1239,7 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                       ),
                     ],
                     const SizedBox(height: 12),
-                    FilledButton.icon(
+                      FilledButton.icon(
                       onPressed: busy ? null : _syncNow,
                       icon: busy
                           ? const SizedBox(
@@ -1347,12 +1248,8 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Icon(Icons.cloud_upload_outlined),
-                      style: FilledButton.styleFrom(
-                        minimumSize: Size.fromHeight(iconMode ? 58 : 48),
-                      ),
                       label: Text(
                         busy ? t('syncing') : t('syncNow'),
-                        style: TextStyle(fontSize: iconMode ? 16 : 14),
                       ),
                     ),
                   ],
@@ -1363,7 +1260,7 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                 t('offlineQueue'),
                 style: GoogleFonts.outfit(
                   fontWeight: FontWeight.w700,
-                  fontSize: iconMode ? 17 : 15,
+                  fontSize: 15,
                 ),
               ),
               const SizedBox(height: 8),
@@ -1374,7 +1271,7 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                           t('syncAllDone'),
                           style: TextStyle(
                             color: TsTokens.textMute,
-                            fontSize: iconMode ? 16 : 14,
+                            fontSize: 14,
                           ),
                         ),
                       )
@@ -1397,12 +1294,12 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                           };
                           return ListTile(
                             contentPadding: EdgeInsets.symmetric(
-                              vertical: iconMode ? 6 : 0,
+                              vertical: 0,
                               horizontal: 8,
                             ),
                             title: Text(
                               kindFr,
-                              style: TextStyle(fontSize: iconMode ? 16 : 14),
+                              style: TextStyle(fontSize: 14),
                             ),
                             subtitle: Text(
                               m.failReason == null || m.failReason!.isEmpty
@@ -1420,10 +1317,7 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
                                     },
                                     child: Text(t('retrySync')),
                                   )
-                                : TsSpeakButton(
-                                    text: '$kindFr. $statusFr',
-                                    compact: true,
-                                  ),
+                                : null,
                           );
                         },
                       ),
@@ -1431,7 +1325,6 @@ class _AgentSyncPageState extends ConsumerState<AgentSyncPage> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

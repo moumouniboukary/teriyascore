@@ -2,22 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/api/client.dart';
 import '../../core/storage/session.dart';
+import '../../core/utils/phone.dart';
+
+export '../../core/utils/phone.dart';
 
 enum OtpPurpose { login, register, reset }
-
-/// Normalise un numéro Burkina vers `+226XXXXXXXX`.
-String normalizeBfPhone(String raw) {
-  final digits = raw.replaceAll(RegExp(r'\D'), '');
-  if (digits.startsWith('226') && digits.length >= 11) {
-    return '+226${digits.substring(3, 11)}';
-  }
-  if (digits.length >= 8) {
-    final local =
-        digits.length == 8 ? digits : digits.substring(digits.length - 8);
-    return '+226$local';
-  }
-  return raw.trim();
-}
 
 class AuthState {
   const AuthState({this.user, this.token, this.ready = false});

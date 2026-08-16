@@ -4,11 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/api/client.dart';
 import '../../core/offline/local_cache.dart';
+import '../../core/offline/queue.dart';
+import '../../core/offline/wipe_user_data.dart';
 import '../../core/l10n/locale_provider.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/offline/queue.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/ts_speak_button.dart';
 import '../../core/widgets/ts_widgets.dart';
 import 'auth/auth_provider.dart';
 import 'agent/agent_store.dart';
@@ -300,6 +301,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             '/me',
             data: {'pin': pinCtrl.text, 'confirm': true},
           );
+      await wipeLocalUserData(ref);
       await ref.read(authProvider.notifier).logout();
       if (mounted) context.go('/login');
     } on ApiException catch (e) {
@@ -325,9 +327,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final user = ref.watch(authProvider).user;
     final t = ref.watch(tsStringsProvider);
 
-    return TsVoiceOnOpen(
-      labelKey: 'profile',
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(t('profile')),
           actions: [
@@ -336,7 +336,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               icon: const Icon(Icons.settings_outlined),
               onPressed: () => context.push('/app/parametres'),
             ),
-            const TsSpeakButton(labelKey: 'profile', alwaysShow: true),
           ],
         ),
         body: ListView(
@@ -509,6 +508,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               onExport: _exportData,
               onDelete: _deleteAccount,
               onLogout: () async {
+                await wipeLocalUserData(ref);
                 await ref.read(authProvider.notifier).logout();
                 if (context.mounted) context.go('/login');
               },
@@ -516,8 +516,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

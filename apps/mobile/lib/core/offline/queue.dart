@@ -133,5 +133,10 @@ class OfflineQueue {
     await _meta.clear();
   }
 
+  Future<void> clearAll() async {
+    await _box.clear();
+    await _meta.clear();
+  }
+
   static String newId() => const Uuid().v4();
 }

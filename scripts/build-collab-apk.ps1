@@ -5,13 +5,13 @@ $Root = Split-Path -Parent $PSScriptRoot
 $Mobile = Join-Path $Root "apps\mobile"
 $OutDir = Join-Path $Root "dist\apk"
 $ParentRoot = Split-Path -Parent $Root
-$ApiBase = "https://teriyascore-api.onrender.com"
+$ApiBase = "https://neoforma-api.onrender.com"
 
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 Push-Location $Mobile
 try {
   flutter pub get
-  flutter build apk --debug
+  flutter build apk --debug --dart-define=API_BASE=$ApiBase
   $apk = Join-Path $Mobile "build\app\outputs\flutter-apk\app-debug.apk"
   if (-not (Test-Path $apk)) { throw "APK introuvable: $apk" }
 

@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../../core/l10n/locale_provider.dart';
 import '../../core/offline/local_cache.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/ts_speak_button.dart';
 import '../../core/widgets/ts_widgets.dart';
 import 'notifications_data.dart';
 
@@ -42,14 +41,11 @@ class NotificationsPage extends ConsumerWidget {
     final t = ref.watch(tsStringsProvider);
     final async = ref.watch(notificationsProvider);
 
-    return TsVoiceOnOpen(
-      labelKey: 'notifications',
-      child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: tsBackButton(context, fallbackLocation: '/app/parametres'),
         title: Text(t('notifications')),
         actions: [
-          const TsSpeakButton(labelKey: 'notifications', alwaysShow: true),
           TextButton(
             onPressed: () async {
               try {
@@ -163,7 +159,6 @@ class NotificationsPage extends ConsumerWidget {
           },
         ),
       ),
-    ),
     );
   }
 }

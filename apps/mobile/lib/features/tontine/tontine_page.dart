@@ -8,7 +8,6 @@ import '../../core/l10n/locale_provider.dart';
 import '../../core/offline/local_cache.dart';
 import '../../core/offline/queue.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/ts_speak_button.dart';
 import '../../core/widgets/ts_widgets.dart';
 import '../sync/sync_service.dart';
 import 'tontine_data.dart';
@@ -220,21 +219,17 @@ class _TontinePageState extends ConsumerState<TontinePage> {
     final async = ref.watch(tontinesProvider);
     final fmt = NumberFormat.decimalPattern('fr');
     final hasCache = ref.read(localCacheProvider).hasKey(LocalCacheKeys.tontines);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
 
-    return TsVoiceOnOpen(
-      labelKey: 'tontine',
-      child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: tsBackButton(context, fallbackLocation: '/app'),
         title: Text(t('tontine')),
-        actions: const [TsSpeakButton(labelKey: 'tontine', alwaysShow: true)],
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: TsTokens.brand,
         foregroundColor: TsTokens.onBrand,
         onPressed: _createTontine,
-        icon: Icon(Icons.add, size: iconMode ? 28 : 24),
+        icon: Icon(Icons.add, size: 24),
         label: Text(t('newTontine')),
       ),
       body: RefreshIndicator(
@@ -345,7 +340,6 @@ class _TontinePageState extends ConsumerState<TontinePage> {
           },
         ),
       ),
-    ),
     );
   }
 }

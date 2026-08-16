@@ -93,11 +93,6 @@ class AboutHelpPage extends ConsumerWidget {
             body: t('helpOfflineBody'),
           ),
           _HelpSection(
-            icon: Icons.accessibility_new_outlined,
-            title: t('helpAccessTitle'),
-            body: t('helpAccessBody'),
-          ),
-          _HelpSection(
             icon: Icons.lock_outline,
             title: t('helpSecurityTitle'),
             body: t('helpSecurityBody'),

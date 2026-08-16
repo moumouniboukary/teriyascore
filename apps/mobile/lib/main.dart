@@ -12,18 +12,6 @@ import 'features/auth/brand_splash.dart';
 import 'features/sync/sync_service.dart';
 import 'router.dart';
 
-/// Mappe la langue interface (fr | mr) vers une [Locale] Material supportée.
-/// Le mooré n'a pas de délégué Material officiel : rendu système en français,
-/// libellés via `TsStrings` / [tsStringsProvider].
-Locale _materialLocaleFor(String lang) {
-  switch (lang) {
-    case 'mr':
-    case 'fr':
-    default:
-      return const Locale('fr', 'FR');
-  }
-}
-
 ThemeMode _themeModeFor(String themePref) {
   switch (themePref) {
     case 'light':
@@ -128,7 +116,7 @@ class _TeriyaScoreAppState extends ConsumerState<TeriyaScoreApp>
       ),
       title: TsTokens.appName,
       debugShowCheckedModeBanner: false,
-      locale: _materialLocaleFor(uxPrefs.language),
+      locale: const Locale('fr', 'FR'),
       supportedLocales: const [Locale('fr', 'FR')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

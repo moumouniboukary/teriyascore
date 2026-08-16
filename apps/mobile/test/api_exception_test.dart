@@ -17,7 +17,7 @@ void main() {
   });
 
   group('resolveApiBase', () {
-    test('valeur par défaut = API cloud TeriyaScore', () {
+    test('valeur par défaut = API cloud NeoForma', () {
       expect(resolveApiBase(), kCloudApiBase);
     });
   });

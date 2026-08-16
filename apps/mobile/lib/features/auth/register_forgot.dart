@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/api/client.dart';
 import '../../core/l10n/locale_provider.dart';
+import '../../core/offline/wipe_user_data.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ts_widgets.dart';
 import '../sync/sync_service.dart';
@@ -42,6 +43,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   }
 
   Future<void> _sendOtp() async {
+    final t = ref.read(tsStringsProvider);
+    if (!isValidBfPhone(phoneCtrl.text)) {
+      setState(() => error = t('phoneInvalid'));
+      return;
+    }
     setState(() {
       loading = true;
       error = null;
@@ -87,6 +93,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   Future<void> _register() async {
     if (otpToken == null) return;
     final t = ref.read(tsStringsProvider);
+    if (!isValidBfPhone(phoneCtrl.text)) {
+      setState(() => error = t('phoneInvalid'));
+      return;
+    }
     final name = nameCtrl.text.trim();
     if (name.length < 2) {
       setState(() => error = t('nameRequired'));
@@ -98,12 +108,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       error = null;
     });
     try {
+      await wipeLocalUserData(ref);
       await ref.read(authProvider.notifier).register(
             phone: phoneCtrl.text.trim(),
             pin: pinCtrl.text.trim(),
             otpToken: otpToken!,
             displayName: name,
-            language: ref.read(uxPrefsProvider).language,
+            language: 'fr',
           );
       await ref.read(appLockProvider.notifier).setupPin(pinCtrl.text.trim());
       unawaited(ref.read(syncServiceProvider).warmCaches());
@@ -159,7 +170,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextField(
                   controller: phoneCtrl,
                   keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(labelText: t('phone')),
+                  inputFormatters: [BfPhoneInputFormatter()],
+                  onChanged: (_) => setState(() {}),
+                  decoration: InputDecoration(
+                    labelText: t('phone'),
+                    hintText: t('phoneHint'),
+                    helperText: t('phoneHelper'),
+                  ),
                 ),
                 if (error != null) ...[
                   const SizedBox(height: 8),
@@ -169,7 +186,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TsPrimaryButton(
                   label: loading ? 'Envoi…' : t('receiveCode'),
                   loading: loading,
-                  onPressed: _sendOtp,
+                  onPressed: loading || !isValidBfPhone(phoneCtrl.text)
+                      ? null
+                      : _sendOtp,
                 ),
               ] else if (step == 1) ...[
                 TextField(

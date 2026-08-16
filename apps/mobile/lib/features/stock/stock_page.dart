@@ -8,7 +8,6 @@ import '../../core/l10n/locale_provider.dart';
 import '../../core/offline/local_cache.dart';
 import '../../core/offline/queue.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/ts_speak_button.dart';
 import '../../core/widgets/ts_widgets.dart';
 import '../sync/sync_service.dart';
 import 'stock_data.dart';
@@ -126,21 +125,17 @@ class _StockPageState extends ConsumerState<StockPage> {
     final t = ref.watch(tsStringsProvider);
     final async = ref.watch(stockArticlesProvider);
     final fmt = NumberFormat.decimalPattern('fr');
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
 
-    return TsVoiceOnOpen(
-      labelKey: 'stock',
-      child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: tsBackButton(context, fallbackLocation: '/app'),
         title: Text(t('stock')),
-        actions: const [TsSpeakButton(labelKey: 'stock', alwaysShow: true)],
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: TsTokens.brand,
         foregroundColor: TsTokens.onBrand,
         onPressed: _addArticle,
-        icon: Icon(Icons.add, size: iconMode ? 28 : 24),
+        icon: Icon(Icons.add, size: 24),
         label: Text(t('addArticle')),
       ),
       body: RefreshIndicator(
@@ -250,7 +245,6 @@ class _StockPageState extends ConsumerState<StockPage> {
           },
         ),
       ),
-    ),
     );
   }
 }

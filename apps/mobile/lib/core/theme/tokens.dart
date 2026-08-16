@@ -220,11 +220,12 @@ ThemeData buildTeriyaScoreTheme([Brightness brightness = Brightness.light]) {
       style: ElevatedButton.styleFrom(
         backgroundColor: primary,
         foregroundColor: TsTokens.onBrand,
-        minimumSize: const Size.fromHeight(52),
+        minimumSize: const Size.fromHeight(40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
         textStyle: GoogleFonts.manrope(
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
         ),
       ),
     ),
@@ -232,8 +233,24 @@ ThemeData buildTeriyaScoreTheme([Brightness brightness = Brightness.light]) {
       style: FilledButton.styleFrom(
         backgroundColor: primary,
         foregroundColor: TsTokens.onBrand,
-        minimumSize: const Size.fromHeight(52),
+        minimumSize: const Size.fromHeight(40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+        textStyle: GoogleFonts.manrope(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+        textStyle: GoogleFonts.manrope(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
       ),
     ),
     textButtonTheme: TextButtonThemeData(

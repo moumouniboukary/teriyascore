@@ -299,7 +299,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     }
 
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -309,43 +308,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          // Mode simple : icônes seules. Mode classique : segments texte.
-          if (iconMode)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _TypeIcon(
-                  icon: Icons.point_of_sale,
-                  selected: type == 'vente',
-                  onTap: () => _setType('vente'),
-                  label: t('sale'),
-                  large: true,
-                ),
-                _TypeIcon(
-                  icon: Icons.handshake_outlined,
-                  selected: type == 'creance',
-                  onTap: () => _setType('creance'),
-                  label: t('receivable'),
-                  large: true,
-                ),
-                _TypeIcon(
-                  icon: Icons.inventory_2_outlined,
-                  selected: type == 'stock',
-                  onTap: () => _setType('stock'),
-                  label: t('stock'),
-                  large: true,
-                ),
-                _TypeIcon(
-                  icon: Icons.money_off_outlined,
-                  selected: type == 'depense',
-                  onTap: () => _setType('depense'),
-                  label: t('expense'),
-                  large: true,
-                ),
-              ],
-            )
-          else
-            TsSegmented(
+          TsSegmented(
               value: type,
               onChanged: _setType,
               options: [
@@ -364,8 +327,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               onSelected: (id) => setState(() => selectedClientId = id),
               onCreate: _createClient,
             ),
-            if (!iconMode) ...[
-              const SizedBox(height: 12),
+            const SizedBox(height: 12),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(t('dueDate')),
@@ -384,7 +346,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                   if (picked != null) setState(() => dueDate = picked);
                 },
               ),
-            ],
           ],
           if (type == 'stock') ...[
             const SizedBox(height: 16),
@@ -409,7 +370,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               decoration: InputDecoration(labelText: t('quantity')),
             ),
           ],
-          if (!iconMode && (type == 'vente' || type == 'depense')) ...[
+          if (type == 'vente' || type == 'depense') ...[
             const SizedBox(height: 16),
             Text(t('cash'), style: TextStyle(color: TsTokens.textMute)),
             const SizedBox(height: 8),
@@ -516,61 +477,6 @@ class _ClientField extends ConsumerWidget {
   }
 }
 
-class _TypeIcon extends StatelessWidget {
-  const _TypeIcon({
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-    required this.label,
-    this.large = false,
-  });
-
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-  final String label;
-  final bool large;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = large ? 80.0 : 72.0;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: size,
-        padding: EdgeInsets.symmetric(vertical: large ? 14 : 12),
-        decoration: BoxDecoration(
-          color: selected
-              ? TsTokens.brand.withValues(alpha: 0.2)
-              : TsTokens.elevated,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: selected ? TsTokens.brand : TsTokens.line,
-            width: selected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: large ? 36 : 32, color: TsTokens.brandSoft),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: large ? 12 : 11,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class VentesPage extends ConsumerStatefulWidget {
   const VentesPage({super.key});
 
@@ -624,14 +530,12 @@ class _VentesPageState extends ConsumerState<VentesPage> {
     ref.listen<int>(ledgerRevisionProvider, (_, _) => _load());
     final fmt = NumberFormat.decimalPattern('fr');
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
     final total = ops.fold<int>(0, (s, o) => s + (o['amountFcfa'] as int? ?? 0));
     return Scaffold(
       appBar: AppBar(
         title: Text(t('ledger')),
         actions: [
-          if (!iconMode)
-            IconButton(
+          IconButton(
               onPressed: () => context.push('/app/enregistrer'),
               icon: const Icon(Icons.add),
             ),
@@ -642,35 +546,6 @@ class _VentesPageState extends ConsumerState<VentesPage> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            if (iconMode) ...[
-              Material(
-                color: TsTokens.brand,
-                borderRadius: BorderRadius.circular(18),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: () => context.push('/app/enregistrer'),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.add_circle_outline,
-                            size: 40, color: TsTokens.onBrand),
-                        const SizedBox(height: 8),
-                        Text(
-                          t('recordSale'),
-                          style: const TextStyle(
-                            color: TsTokens.onBrand,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
             if (fromCache)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
@@ -684,19 +559,16 @@ class _VentesPageState extends ConsumerState<VentesPage> {
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: TsTokens.brandSoft,
                     fontWeight: FontWeight.w800,
-                    fontSize: iconMode ? 32 : null,
                   ),
             ),
             const SizedBox(height: 12),
             if (ops.isEmpty) ...[
               Text(t('noSales'), style: TextStyle(color: TsTokens.textMute)),
-              if (!iconMode) ...[
-                const SizedBox(height: 12),
-                TsPrimaryButton(
+              const SizedBox(height: 12),
+              TsPrimaryButton(
                   label: t('recordSale'),
                   onPressed: () => context.push('/app/enregistrer'),
                 ),
-              ],
             ] else
               ...ops.map(
                 (op) => ListTile(
@@ -919,7 +791,6 @@ class _DettesPageState extends ConsumerState<DettesPage> {
     ref.listen<int>(ledgerRevisionProvider, (_, _) => _load());
     final fmt = NumberFormat.decimalPattern('fr');
     final t = ref.watch(tsStringsProvider);
-    final iconMode = ref.watch(uxPrefsProvider).iconMode;
     final total = ops.fold<int>(0, (s, o) => s + _remaining(o));
     return Scaffold(
       appBar: AppBar(
@@ -995,23 +866,7 @@ class _DettesPageState extends ConsumerState<DettesPage> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        if (iconMode)
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton(
-                              onPressed:
-                                  busyId == id ? null : () => _settle(id),
-                              child: Text(
-                                busyId == id ? '…' : t('payDebt'),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          )
-                        else
-                          Wrap(
+                        Wrap(
                             spacing: 4,
                             children: [
                               TextButton(

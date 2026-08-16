@@ -1,0 +1,7 @@
+TeriyaScore — notice examinateurs (Android)
+
+1. Installez TeriyaScore-collaborateur.apk (Paramètres → autoriser l’installation depuis cette source).
+2. Ouvrez TeriyaScore.
+3. Appuyez sur « Essayer sans compte » (aucun internet, aucun PC).
+4. Onglet « Nouveau » : saisissez un dossier (Client → Profil → Confiance → Capacité).
+5. Le score 300–850 s’affiche sur le téléphone. « Synchroniser » est optionnel (cloud) ; sans compte les dossiers restent sur l’appareil.

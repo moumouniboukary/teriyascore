@@ -12,24 +12,12 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
-/// API cloud TeriyaScore (DigiCoop) — jamais NeoForma.
-const String kCloudApiBase = 'https://teriyascore-api.onrender.com';
+/// API cloud — même stack que NeoForma.
+const String kCloudApiBase = 'https://neoforma-api.onrender.com';
 
 /// Local uniquement : `--dart-define=API_BASE=http://10.0.2.2:3001`
 String resolveApiBase() {
   const fromEnv = String.fromEnvironment('API_BASE');
-  final base = fromEnv.replaceAll(RegExp(r'/$'), '');
-  if (_isLocalDevApi(base)) return base;
-  if (base.contains('neoforma')) return kCloudApiBase;
-  if (base.startsWith('https://') && base.contains('teriyascore')) return base;
+  if (fromEnv.isNotEmpty) return fromEnv.replaceAll(RegExp(r'/$'), '');
   return kCloudApiBase;
-}
-
-bool _isLocalDevApi(String base) {
-  if (base.isEmpty || !base.startsWith('http://')) return false;
-  final host = Uri.tryParse(base)?.host ?? '';
-  if (host == 'localhost' || host == '127.0.0.1') return true;
-  if (host.startsWith('10.')) return true;
-  if (host.startsWith('192.168.')) return true;
-  return false;
 }

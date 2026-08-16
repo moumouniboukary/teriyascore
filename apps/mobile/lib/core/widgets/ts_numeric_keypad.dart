@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/tokens.dart';
 
-/// Grand clavier numérique 3×4 (1-9, effacer, 0, retour) — pensé pour la
-/// faible littératie : gros boutons, pas de saisie clavier système requise.
+/// Clavier numérique 3×4 (1-9, effacer, 0, retour).
 class TsNumericKeypad extends StatelessWidget {
   const TsNumericKeypad({
     super.key,
@@ -38,9 +37,9 @@ class TsNumericKeypad extends StatelessWidget {
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 1.7,
+      mainAxisSpacing: 6,
+      crossAxisSpacing: 6,
+      childAspectRatio: 2.2,
       children: _keys.map((k) {
         final isAction = k == 'C' || k == '⌫';
         return _NfKeypadButton(
@@ -77,21 +76,21 @@ class _NfKeypadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: isAction ? TsTokens.card2 : TsTokens.elevated,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(10),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         onTap: onTap,
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(color: TsTokens.line),
           ),
           child: Text(
             label,
             style: TextStyle(
-              fontSize: label == '⌫' ? 26 : 24,
-              fontWeight: FontWeight.w800,
+              fontSize: label == '⌫' ? 18 : 16,
+              fontWeight: FontWeight.w600,
               color: isAction ? TsTokens.warn : TsTokens.text,
             ),
           ),
@@ -101,8 +100,7 @@ class _NfKeypadButton extends StatelessWidget {
   }
 }
 
-/// Champ montant en lecture seule + clavier numérique intégré — combine
-/// affichage grande taille et [TsNumericKeypad], relié à un [TextEditingController].
+/// Champ montant en lecture seule + clavier numérique intégré.
 class TsKeypadAmountField extends StatelessWidget {
   const TsKeypadAmountField({
     super.key,
@@ -140,7 +138,7 @@ class TsKeypadAmountField extends StatelessWidget {
         const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: TsTokens.elevated,
             borderRadius: BorderRadius.circular(14),
@@ -156,8 +154,8 @@ class TsKeypadAmountField extends StatelessWidget {
                     return Text(
                       text,
                       style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                         color: TsTokens.brandSoft,
                       ),
                     );
