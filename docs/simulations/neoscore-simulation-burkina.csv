@@ -1,0 +1,13 @@
+id;nom;genre;ville;metier;score;segment;eligible;ventes30j;ops;offreSuggeree;warnings
+BF-SIM-01;Aminata Ouédraogo;femme;Ouagadougou;commerce;96;A;oui;980000;22;194000;""
+BF-SIM-02;Issouf Sawadogo;homme;Ouagadougou;mecanique;59;B;non;420000;14;0;""
+BF-SIM-03;Fatoumata Konaté;femme;Bobo-Dioulasso;restauration;97;A;oui;520000;16;76000;""
+BF-SIM-04;Boukary Compaoré;homme;Ouagadougou;transport;66;B;oui;240000;8;55000;""
+BF-SIM-05;Mariam Zongo;femme;Ouagadougou;artisanat;62;B;non;85000;4;0;"Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives). | Ventes cahier = 13% du CA déclaré (hors plage 50–200%). Vérification recommandée."
+BF-SIM-06;Abdoulaye Traoré;homme;Koudougou;agriculture;95;A;oui;280000;10;96000;""
+BF-SIM-07;Salimata Kaboré;femme;Ouagadougou;services;100;A;oui;520000;18;159000;""
+BF-SIM-08;Moussa Diallo;homme;Bobo-Dioulasso;menuiserie;47;B;non;350000;9;0;"Ventes cahier = 26% du CA déclaré (hors plage 50–200%). Vérification recommandée."
+BF-SIM-09;Rasmané Ilboudo;homme;Ouagadougou;commerce;95;A;oui;2100000;30;193000;""
+BF-SIM-10;Aïcha Nabé;femme;Ouahigouya;commerce;40;C;non;45000;3;0;"Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives)."
+BF-SIM-11;Hamidou Ouattara;homme;Banfora;commerce;96;A;oui;1850000;32;194000;""
+BF-SIM-12;Clarisse Nikiema;femme;Ouagadougou;restauration;99;A;oui;580000;20;145000;""

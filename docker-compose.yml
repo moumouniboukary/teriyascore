@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: teriyascore-postgres
+    environment:
+      POSTGRES_USER: teriyascore
+      POSTGRES_PASSWORD: teriyascore
+      POSTGRES_DB: teriyascore
+    ports:
+      - "5434:5432"
+    volumes:
+      - teriyascore_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U teriyascore -d teriyascore"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: teriyascore-redis
+    ports:
+      - "6379:6379"
+
+  # ML solvabilité (NeoScore) — brancher l'API avec SCORING_ML_URL=http://localhost:8000
+  neoscore-ml:
+    build:
+      context: ./services/neoscore
+    container_name: teriyascore-neoscore-ml
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  teriyascore_pg:

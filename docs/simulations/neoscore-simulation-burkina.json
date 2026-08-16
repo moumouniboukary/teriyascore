@@ -1,0 +1,699 @@
+{
+  "meta": {
+    "title": "TeriyaScore — Simulation solvabilité Burkina Faso",
+    "version": "1.0",
+    "generatedAt": "2026-08-06T18:20:30.924Z",
+    "engine": "heuristic (@teriyascore/neoscore)",
+    "seuilEligibilite": 50,
+    "nPersonas": 12,
+    "nEligible": 8,
+    "avgScore": 79,
+    "bySegment": {
+      "A": 7,
+      "B": 4,
+      "C": 1,
+      "D": 0
+    },
+    "notes": [
+      "Données simulées réalistes (FCFA, métiers informels Ouaga/Bobo/secondaires).",
+      "Le score n’utilise pas de labels de remboursement réels (ML synthétique hors scope).",
+      "Éligibilité = score >= 50 + activité min. (5 ops ou 4 semaines) + capacité >= 50 000 FCFA + retards < 2 + créances <= 120% ventes 30 j."
+    ]
+  },
+  "personas": [
+    {
+      "id": "BF-SIM-01",
+      "nom": "Aminata Ouédraogo",
+      "genre": "femme",
+      "ville": "Ouagadougou",
+      "zone": "Marché Sankaryaré",
+      "metier": "commerce",
+      "description": "Revendeuse de céréales et condiments. Tontine mensuelle 10 000 FCFA, Orange Money quotidien, peu de créances.",
+      "profil": {
+        "ancienneteLabel": "6_10",
+        "caJourLabel": "30_60k",
+        "tontine": true,
+        "tontineCotis": 10000,
+        "mobileMoney": "quotidien",
+        "compte": "non",
+        "chargesFixesMensuelles": 25000,
+        "saisonnalite": "moderee",
+        "garantieSolidaire": true
+      },
+      "cahier": {
+        "ventesFcfa": 980000,
+        "depensesFcfa": 420000,
+        "creancesOuvertesFcfa": 45000,
+        "creancesRetard": 0,
+        "nbOperations": 22,
+        "semainesActives": 5
+      },
+      "score": 96,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 100,
+        "volume": 100,
+        "dettes": 83.71428571428572,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.725925925925926,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 480200,
+        "maxMonthlyPaymentFcfa": 168070,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 480012
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 338000,
+        "suggestedFcfa": 194000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-02",
+      "nom": "Issouf Sawadogo",
+      "genre": "homme",
+      "ville": "Ouagadougou",
+      "zone": "Zone du bois / Kossodo",
+      "metier": "mecanique",
+      "description": "Mécanicien moto. CA irrégulier, créances clients atelier en retard, Moov Money occasionnel.",
+      "profil": {
+        "ancienneteLabel": "3_5",
+        "caJourLabel": "15_30k",
+        "tontine": false,
+        "tontineCotis": 0,
+        "mobileMoney": "occasionnel",
+        "compte": "oui_dormant",
+        "chargesFixesMensuelles": 40000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 420000,
+        "depensesFcfa": 210000,
+        "creancesOuvertesFcfa": 180000,
+        "creancesRetard": 2,
+        "nbOperations": 14,
+        "semainesActives": 4
+      },
+      "score": 59,
+      "segment": "B",
+      "eligible": false,
+      "criteria": {
+        "regularite": 68,
+        "volume": 100,
+        "dettes": 2,
+        "croissance": 66
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.6222222222222222,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 170000,
+        "maxMonthlyPaymentFcfa": 59500,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 169933
+      },
+      "offer": {
+        "minFcfa": 0,
+        "maxFcfa": 0,
+        "suggestedFcfa": 0
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-03",
+      "nom": "Fatoumata Konaté",
+      "genre": "femme",
+      "ville": "Bobo-Dioulasso",
+      "zone": "Secteur 5 — maquis",
+      "metier": "restauration",
+      "description": "Tenancière de maquis. Forte saisonnalité (pluies) : CA déclaré abaissé à 15–30 k/j, tontine, cahier suivi.",
+      "profil": {
+        "ancienneteLabel": "6_10",
+        "caJourLabel": "15_30k",
+        "tontine": true,
+        "tontineCotis": 15000,
+        "mobileMoney": "regulier",
+        "compte": "non",
+        "chargesFixesMensuelles": 35000,
+        "saisonnalite": "forte",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 520000,
+        "depensesFcfa": 340000,
+        "creancesOuvertesFcfa": 30000,
+        "creancesRetard": 0,
+        "nbOperations": 16,
+        "semainesActives": 4
+      },
+      "score": 97,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 100,
+        "volume": 100,
+        "dettes": 88.38461538461539,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.7703703703703704,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 103000,
+        "maxMonthlyPaymentFcfa": 36050,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 102960
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 102960,
+        "suggestedFcfa": 76000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-04",
+      "nom": "Boukary Compaoré",
+      "genre": "homme",
+      "ville": "Ouagadougou",
+      "zone": "Dassasgho",
+      "metier": "transport",
+      "description": "Conducteur moto-taxi (wôro-wôro). Orange Money quotidien, faible ancienneté (1–2 ans), activité encore irrégulière.",
+      "profil": {
+        "ancienneteLabel": "1_2",
+        "caJourLabel": "5_15k",
+        "tontine": false,
+        "tontineCotis": 0,
+        "mobileMoney": "quotidien",
+        "compte": "non",
+        "chargesFixesMensuelles": 20000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 240000,
+        "depensesFcfa": 160000,
+        "creancesOuvertesFcfa": 40000,
+        "creancesRetard": 0,
+        "nbOperations": 8,
+        "semainesActives": 3
+      },
+      "score": 66,
+      "segment": "B",
+      "eligible": true,
+      "criteria": {
+        "regularite": 60,
+        "volume": 80,
+        "dettes": 79,
+        "croissance": 40
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.8,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 60000,
+        "maxMonthlyPaymentFcfa": 21000,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 59976
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 59976,
+        "suggestedFcfa": 55000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-05",
+      "nom": "Mariam Zongo",
+      "genre": "femme",
+      "ville": "Ouagadougou",
+      "zone": "Gounghin",
+      "metier": "artisanat",
+      "description": "Couturière à domicile. CA déclaré trop optimiste (15–30 k/j) face à un cahier réel faible — risque de sur-déclaration.",
+      "profil": {
+        "ancienneteLabel": "3_5",
+        "caJourLabel": "15_30k",
+        "tontine": true,
+        "tontineCotis": 5000,
+        "mobileMoney": "occasionnel",
+        "compte": "non",
+        "chargesFixesMensuelles": 18000,
+        "saisonnalite": "moderee",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 85000,
+        "depensesFcfa": 40000,
+        "creancesOuvertesFcfa": 0,
+        "creancesRetard": 0,
+        "nbOperations": 4,
+        "semainesActives": 2
+      },
+      "score": 62,
+      "segment": "B",
+      "eligible": false,
+      "criteria": {
+        "regularite": 54,
+        "volume": 49.625,
+        "dettes": 100,
+        "croissance": 42
+      },
+      "dataQuality": {
+        "minActivityMet": false,
+        "declaredVsActualOk": false,
+        "declaredVsActualRatio": 0.1259259259259259,
+        "warnings": [
+          "Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives).",
+          "Ventes cahier = 13% du CA déclaré (hors plage 50–200%). Vérification recommandée."
+        ]
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 18400,
+        "maxMonthlyPaymentFcfa": 6440,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 18393
+      },
+      "offer": {
+        "minFcfa": 0,
+        "maxFcfa": 0,
+        "suggestedFcfa": 0
+      },
+      "warnings": [
+        "Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives).",
+        "Ventes cahier = 13% du CA déclaré (hors plage 50–200%). Vérification recommandée."
+      ]
+    },
+    {
+      "id": "BF-SIM-06",
+      "nom": "Abdoulaye Traoré",
+      "genre": "homme",
+      "ville": "Koudougou",
+      "zone": "Périurbain",
+      "metier": "agriculture",
+      "description": "Maraîcher. Saisonnalité forte, ventes groupées, tontine villageoise, garantie solidaire.",
+      "profil": {
+        "ancienneteLabel": "p10",
+        "caJourLabel": "5_15k",
+        "tontine": true,
+        "tontineCotis": 8000,
+        "mobileMoney": "regulier",
+        "compte": "non",
+        "chargesFixesMensuelles": 12000,
+        "saisonnalite": "forte",
+        "garantieSolidaire": true
+      },
+      "cahier": {
+        "ventesFcfa": 280000,
+        "depensesFcfa": 90000,
+        "creancesOuvertesFcfa": 0,
+        "creancesRetard": 0,
+        "nbOperations": 10,
+        "semainesActives": 4
+      },
+      "score": 95,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 92.6,
+        "volume": 89.75,
+        "dettes": 100,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.9333333333333333,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 141500,
+        "maxMonthlyPaymentFcfa": 49525,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 141445
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 141445,
+        "suggestedFcfa": 96000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-07",
+      "nom": "Salimata Kaboré",
+      "genre": "femme",
+      "ville": "Ouagadougou",
+      "zone": "Cissin",
+      "metier": "services",
+      "description": "Coiffeuse salon. Très régulière, tontine, historique crédit remboursé, candidature solide.",
+      "profil": {
+        "ancienneteLabel": "6_10",
+        "caJourLabel": "15_30k",
+        "tontine": true,
+        "tontineCotis": 12000,
+        "mobileMoney": "quotidien",
+        "compte": "oui_actif",
+        "chargesFixesMensuelles": 30000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": true
+      },
+      "cahier": {
+        "ventesFcfa": 520000,
+        "depensesFcfa": 210000,
+        "creancesOuvertesFcfa": 20000,
+        "creancesRetard": 0,
+        "nbOperations": 18,
+        "semainesActives": 5
+      },
+      "score": 100,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 100,
+        "volume": 100,
+        "dettes": 100,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.7703703703703704,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 268000,
+        "maxMonthlyPaymentFcfa": 93800,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 267895
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 267895,
+        "suggestedFcfa": 159000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-08",
+      "nom": "Moussa Diallo",
+      "genre": "homme",
+      "ville": "Bobo-Dioulasso",
+      "zone": "Colma",
+      "metier": "menuiserie",
+      "description": "Menuisier. Gros projets à crédit client, plusieurs impayés, charges atelier élevées. CA déclaré 30–60 k/j peu cohérent avec le cahier (ventes ~350 k/30 j) — sous-déclaration probable.",
+      "profil": {
+        "ancienneteLabel": "3_5",
+        "caJourLabel": "30_60k",
+        "tontine": false,
+        "tontineCotis": 0,
+        "mobileMoney": "occasionnel",
+        "compte": "non",
+        "chargesFixesMensuelles": 55000,
+        "saisonnalite": "moderee",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 350000,
+        "depensesFcfa": 220000,
+        "creancesOuvertesFcfa": 450000,
+        "creancesRetard": 3,
+        "nbOperations": 9,
+        "semainesActives": 3
+      },
+      "score": 47,
+      "segment": "B",
+      "eligible": false,
+      "criteria": {
+        "regularite": 53,
+        "volume": 83.25,
+        "dettes": 0,
+        "croissance": 51
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": false,
+        "declaredVsActualRatio": 0.25925925925925924,
+        "warnings": [
+          "Ventes cahier = 26% du CA déclaré (hors plage 50–200%). Vérification recommandée."
+        ]
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 64600,
+        "maxMonthlyPaymentFcfa": 22610,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 64575
+      },
+      "offer": {
+        "minFcfa": 0,
+        "maxFcfa": 0,
+        "suggestedFcfa": 0
+      },
+      "warnings": [
+        "Ventes cahier = 26% du CA déclaré (hors plage 50–200%). Vérification recommandée."
+      ]
+    },
+    {
+      "id": "BF-SIM-09",
+      "nom": "Rasmané Ilboudo",
+      "genre": "homme",
+      "ville": "Ouagadougou",
+      "zone": "Patte d'Oie",
+      "metier": "commerce",
+      "description": "Boutique pièces détachées. CA élevé, compte bancaire actif, peu de retard.",
+      "profil": {
+        "ancienneteLabel": "p10",
+        "caJourLabel": "60_100k",
+        "tontine": false,
+        "tontineCotis": 0,
+        "mobileMoney": "quotidien",
+        "compte": "oui_actif",
+        "chargesFixesMensuelles": 80000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 2100000,
+        "depensesFcfa": 1400000,
+        "creancesOuvertesFcfa": 95000,
+        "creancesRetard": 0,
+        "nbOperations": 30,
+        "semainesActives": 5
+      },
+      "score": 95,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 100,
+        "volume": 100,
+        "dettes": 80.73333333333333,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.875,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 620000,
+        "maxMonthlyPaymentFcfa": 217000,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 619757
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 335000,
+        "suggestedFcfa": 193000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-10",
+      "nom": "Aïcha Nabé",
+      "genre": "femme",
+      "ville": "Ouahigouya",
+      "zone": "Centre-ville",
+      "metier": "commerce",
+      "description": "Vendeuse fripes. Débutante, volume faible, activité insuffisante pour éligibilité.",
+      "profil": {
+        "ancienneteLabel": "m1",
+        "caJourLabel": "m5k",
+        "tontine": false,
+        "tontineCotis": 0,
+        "mobileMoney": "jamais",
+        "compte": "non",
+        "chargesFixesMensuelles": 8000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 45000,
+        "depensesFcfa": 20000,
+        "creancesOuvertesFcfa": 0,
+        "creancesRetard": 0,
+        "nbOperations": 3,
+        "semainesActives": 2
+      },
+      "score": 40,
+      "segment": "C",
+      "eligible": false,
+      "criteria": {
+        "regularite": 15,
+        "volume": 29.125,
+        "dettes": 100,
+        "croissance": 17
+      },
+      "dataQuality": {
+        "minActivityMet": false,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.6,
+        "warnings": [
+          "Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives)."
+        ]
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 17000,
+        "maxMonthlyPaymentFcfa": 5950,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 16993
+      },
+      "offer": {
+        "minFcfa": 0,
+        "maxFcfa": 0,
+        "suggestedFcfa": 0
+      },
+      "warnings": [
+        "Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives)."
+      ]
+    },
+    {
+      "id": "BF-SIM-11",
+      "nom": "Hamidou Ouattara",
+      "genre": "homme",
+      "ville": "Banfora",
+      "zone": "Marché central",
+      "metier": "commerce",
+      "description": "Grossiste sucre/huile. Volume élevé, tontine, Orange Money quotidien — profil solide.",
+      "profil": {
+        "ancienneteLabel": "6_10",
+        "caJourLabel": "60_100k",
+        "tontine": true,
+        "tontineCotis": 25000,
+        "mobileMoney": "quotidien",
+        "compte": "oui_actif",
+        "chargesFixesMensuelles": 60000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": true
+      },
+      "cahier": {
+        "ventesFcfa": 1850000,
+        "depensesFcfa": 1200000,
+        "creancesOuvertesFcfa": 70000,
+        "creancesRetard": 0,
+        "nbOperations": 32,
+        "semainesActives": 5
+      },
+      "score": 96,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 100,
+        "volume": 100,
+        "dettes": 85.60720720720721,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.7708333333333334,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 565000,
+        "maxMonthlyPaymentFcfa": 197750,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 564779
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 338000,
+        "suggestedFcfa": 194000
+      },
+      "warnings": []
+    },
+    {
+      "id": "BF-SIM-12",
+      "nom": "Clarisse Nikiema",
+      "genre": "femme",
+      "ville": "Ouagadougou",
+      "zone": "Tanghin",
+      "metier": "restauration",
+      "description": "Vendeuse de tô / beignets. Cahier bien tenu, écart CA déclaré/réel faible.",
+      "profil": {
+        "ancienneteLabel": "3_5",
+        "caJourLabel": "15_30k",
+        "tontine": true,
+        "tontineCotis": 7000,
+        "mobileMoney": "regulier",
+        "compte": "non",
+        "chargesFixesMensuelles": 22000,
+        "saisonnalite": "stable",
+        "garantieSolidaire": false
+      },
+      "cahier": {
+        "ventesFcfa": 580000,
+        "depensesFcfa": 310000,
+        "creancesOuvertesFcfa": 15000,
+        "creancesRetard": 0,
+        "nbOperations": 20,
+        "semainesActives": 5
+      },
+      "score": 99,
+      "segment": "A",
+      "eligible": true,
+      "criteria": {
+        "regularite": 100,
+        "volume": 100,
+        "dettes": 94.27586206896552,
+        "croissance": 100
+      },
+      "dataQuality": {
+        "minActivityMet": true,
+        "declaredVsActualOk": true,
+        "declaredVsActualRatio": 0.8592592592592593,
+        "warnings": []
+      },
+      "repaymentCapacity": {
+        "estimatedMonthlyRevenueFcfa": 241000,
+        "maxMonthlyPaymentFcfa": 84350,
+        "capacityRatio": 0.35,
+        "maxPrincipalFcfa": 240906
+      },
+      "offer": {
+        "minFcfa": 50000,
+        "maxFcfa": 240906,
+        "suggestedFcfa": 145000
+      },
+      "warnings": []
+    }
+  ]
+}

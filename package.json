@@ -1,0 +1,45 @@
+{
+  "name": "teriyascore",
+  "private": true,
+  "version": "0.1.0",
+  "description": "TeriyaScore — inclusion financière, secteur informel Burkina Faso",
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "apps/worker",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@teriyascore/web & npm run dev --workspace=@teriyascore/api",
+    "dev:web": "npm run dev --workspace=@teriyascore/web",
+    "dev:api": "npm run dev --workspace=@teriyascore/api",
+    "dev:worker": "npm run dev --workspace=@teriyascore/worker",
+    "worker": "npm run start --workspace=@teriyascore/worker",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspace=@teriyascore/api && npm run test --workspace=@teriyascore/neoscore",
+    "db:generate": "npm run db:generate --workspace=@teriyascore/api",
+    "db:migrate": "npm run db:migrate --workspace=@teriyascore/api",
+    "db:deploy": "npm run db:deploy --workspace=@teriyascore/api",
+    "db:status": "npm run db:status --workspace=@teriyascore/api",
+    "db:push": "npm run db:push --workspace=@teriyascore/api",
+    "mobile:run": "cd apps/mobile && flutter run --dart-define=API_BASE=http://10.0.2.2:3001",
+    "mobile:collab": "cd apps/mobile && flutter run",
+    "mobile:apk": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-collab-apk.ps1",
+    "mobile:analyze": "cd apps/mobile && flutter analyze",
+    "mobile:e2e": "cd apps/mobile && maestro test e2e/",
+    "prod:up": "docker compose -f docker-compose.prod.yml up -d --build",
+    "ml:up": "docker compose up -d --build neoscore-ml",
+    "ml:health": "curl -sf http://127.0.0.1:8000/health"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.25.12": true,
+    "prisma@6.19.3": true
+  }
+}

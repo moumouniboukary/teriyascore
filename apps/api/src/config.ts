@@ -1,0 +1,56 @@
+const isProd = process.env.NODE_ENV === "production";
+
+/** En dev : true = téléphone sur le LAN (PWA). En prod : origine explicite. */
+function resolveCorsOrigin(): boolean | string | string[] {
+  const raw = process.env.CORS_ORIGIN;
+  if (!raw || raw === "*") return isProd ? "http://localhost:5173" : true;
+  if (raw.includes(",")) return raw.split(",").map((s) => s.trim());
+  return raw;
+}
+
+const DEV_JWT_SECRET = "teriyascore-dev-secret";
+
+/** En prod : secret obligatoire (≥ 32 car.). En dev : fallback toléré. */
+function resolveJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (isProd) {
+    if (!secret || secret === DEV_JWT_SECRET || secret.length < 32) {
+      throw new Error(
+        "JWT_SECRET manquant ou trop faible en production (≥ 32 caractères requis)."
+      );
+    }
+  }
+  return secret ?? DEV_JWT_SECRET;
+}
+
+export const config = {
+  port: Number(process.env.PORT ?? 3001),
+  host: process.env.HOST ?? "0.0.0.0",
+  jwtSecret: resolveJwtSecret(),
+  corsOrigin: resolveCorsOrigin(),
+  databaseUrl:
+    process.env.DATABASE_URL ??
+    "postgresql://teriyascore:teriyascore@localhost:5433/teriyascore?schema=public",
+  isProd,
+  /** Fenêtre / plafond du rate-limit HTTP global. */
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX ?? (isProd ? 300 : 1000)),
+  rateLimitWindow: process.env.RATE_LIMIT_WINDOW ?? "1 minute",
+  sentryDsn: process.env.SENTRY_DSN ?? "",
+  release: process.env.APP_RELEASE ?? "teriyascore-api@0.1.0",
+  /** Webhook Slack/Discord/generic pour alertes ops (5xx, readiness). */
+  alertWebhookUrl: process.env.ALERT_WEBHOOK_URL ?? "",
+  /**
+   * URL du service ML NeoScore (ex. http://localhost:8000).
+   * Vide = heuristique TypeScript uniquement.
+   * Accepte un host nu (Render `fromService.property: host`) → https://…
+   */
+  scoringMlUrl: normalizeScoringMlUrl(process.env.SCORING_ML_URL ?? ""),
+  scoringMlTimeoutMs: Number(process.env.SCORING_ML_TIMEOUT_MS ?? 2500),
+};
+
+function normalizeScoringMlUrl(raw: string): string {
+  const u = raw.trim().replace(/\/$/, "");
+  if (!u) return "";
+  if (/^https?:\/\//i.test(u)) return u;
+  return `https://${u}`;
+}

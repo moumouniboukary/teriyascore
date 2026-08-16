@@ -1,0 +1,12 @@
+# Maestro E2E — parcours smoke TeriyaScore (device / émulateur).
+# Prérequis : Maestro CLI (https://maestro.mobile.dev)
+#   maestro test apps/mobile/e2e/
+appId: bf.teriyascore.teriyascore
+---
+- launchApp
+- assertVisible: "TeriyaScore"
+- extendedWaitUntil:
+    visible: "Connexion"
+    timeout: 15000
+- tapOn: "Connexion"
+- assertVisible: "Téléphone"

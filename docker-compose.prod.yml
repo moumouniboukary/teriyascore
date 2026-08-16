@@ -1,0 +1,116 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: teriyascore
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-teriyascore}
+      POSTGRES_DB: teriyascore
+    volumes:
+      - teriyascore_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U teriyascore -d teriyascore"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+
+  neoscore-ml:
+    build:
+      context: ./services/neoscore
+    environment:
+      PORT: "8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  api:
+    build:
+      context: .
+      target: api
+    environment:
+      DATABASE_URL: postgresql://teriyascore:${POSTGRES_PASSWORD:-teriyascore}@postgres:5432/teriyascore?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-teriyascore-prod-change-me-min-32-chars!!}
+      PORT: "3001"
+      HOST: 0.0.0.0
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      NODE_ENV: production
+      USE_JOB_QUEUE: ${USE_JOB_QUEUE:-1}
+      SCORING_ML_URL: ${SCORING_ML_URL:-http://neoscore-ml:8000}
+      SCORING_ML_TIMEOUT_MS: ${SCORING_ML_TIMEOUT_MS:-8000}
+      SMS_GATEWAY_URL: ${SMS_GATEWAY_URL:-}
+      SMS_API_KEY: ${SMS_API_KEY:-}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM: ${TWILIO_FROM:-}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-}
+      PARTNER_API_KEY: ${PARTNER_API_KEY:-}
+      KOBO_API_KEY: ${KOBO_API_KEY:-}
+      ORANGE_MM_URL: ${ORANGE_MM_URL:-}
+      ORANGE_MM_API_KEY: ${ORANGE_MM_API_KEY:-}
+      MOOV_MM_URL: ${MOOV_MM_URL:-}
+      MOOV_MM_API_KEY: ${MOOV_MM_API_KEY:-}
+      BRAND_APP_NAME: ${BRAND_APP_NAME:-TeriyaScore}
+      BRAND_PRIMARY_COLOR: ${BRAND_PRIMARY_COLOR:-#2DB88A}
+      BRAND_SECONDARY_COLOR: ${BRAND_SECONDARY_COLOR:-#5DCAA5}
+      BRAND_LOGO_URL: ${BRAND_LOGO_URL:-}
+      BRAND_SUPPORT_PHONE: ${BRAND_SUPPORT_PHONE:-}
+      PARTNER_BRAND_JSON: ${PARTNER_BRAND_JSON:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      neoscore-ml:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  worker:
+    build:
+      context: .
+      target: worker
+    environment:
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+      SMS_GATEWAY_URL: ${SMS_GATEWAY_URL:-}
+      SMS_API_KEY: ${SMS_API_KEY:-}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM: ${TWILIO_FROM:-}
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+      ORANGE_MM_URL: ${ORANGE_MM_URL:-}
+      ORANGE_MM_API_KEY: ${ORANGE_MM_API_KEY:-}
+      MOOV_MM_URL: ${MOOV_MM_URL:-}
+      MOOV_MM_API_KEY: ${MOOV_MM_API_KEY:-}
+    depends_on:
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      target: web
+      args:
+        VITE_API_URL: ""
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  teriyascore_pg:

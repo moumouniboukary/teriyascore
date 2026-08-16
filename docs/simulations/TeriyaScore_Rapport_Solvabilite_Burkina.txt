@@ -1,0 +1,18 @@
+TeriyaScore — Simulation solvabilité Burkina Faso
+Genere: 2026-08-06T18:20:30.924Z
+Score moyen: 79/100 | Eligibles: 8/12
+Segments: A=7 B=4 C=1 D=0
+
+ID	Nom	Score	Seg	Elig	Offre	Ventes30j	Ops	Retards	Creances	RatioCA	Alertes
+BF-SIM-01	Aminata Ouédraogo	96	A	oui	194000	980000	22	0	45000	0.73	-
+BF-SIM-02	Issouf Sawadogo	59	B	non	0	420000	14	2	180000	0.62	-
+BF-SIM-03	Fatoumata Konaté	97	A	oui	76000	520000	16	0	30000	0.77	-
+BF-SIM-04	Boukary Compaoré	66	B	oui	55000	240000	8	0	40000	0.80	-
+BF-SIM-05	Mariam Zongo	62	B	non	0	85000	4	0	0	0.13	Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives). | Ventes cahier = 13% du CA déclaré (hors plage 50–200%). Vérification recommandée.
+BF-SIM-06	Abdoulaye Traoré	95	A	oui	96000	280000	10	0	0	0.93	-
+BF-SIM-07	Salimata Kaboré	100	A	oui	159000	520000	18	0	20000	0.77	-
+BF-SIM-08	Moussa Diallo	47	B	non	0	350000	9	3	450000	0.26	Ventes cahier = 26% du CA déclaré (hors plage 50–200%). Vérification recommandée.
+BF-SIM-09	Rasmané Ilboudo	95	A	oui	193000	2100000	30	0	95000	0.88	-
+BF-SIM-10	Aïcha Nabé	40	C	non	0	45000	3	0	0	0.60	Activité insuffisante sur 30 jours (min. 5 opérations ou 4 semaines actives).
+BF-SIM-11	Hamidou Ouattara	96	A	oui	194000	1850000	32	0	70000	0.77	-
+BF-SIM-12	Clarisse Nikiema	99	A	oui	145000	580000	20	0	15000	0.86	-
